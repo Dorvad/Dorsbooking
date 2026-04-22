@@ -2,21 +2,28 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
     <title>Dor | Meeting Scheduler</title>
     <meta
       name="description"
       content="A modern booking experience with Google Calendar sync and an admin side for managing availability."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="./styles.css" />
   </head>
-  <script src="./app.js"></script>
+
   <body>
     <div class="page-shell">
       <header class="topbar">
@@ -32,7 +39,7 @@
         </nav>
 
         <div class="topbar-actions">
-          <button class="ghost-button">Join waitlist</button>
+          <button class="ghost-button" type="button">Join waitlist</button>
           <a class="primary-button" href="#manager">Manager login</a>
         </div>
       </header>
@@ -40,7 +47,7 @@
       <main>
         <section class="hero" id="hero">
           <div class="hero-copy card glass-card reveal-up">
-            <span class="eyebrow">Fast scheduling · Google Calendar connected</span>
+            <span class="eyebrow">Fast scheduling · Google Calendar ready</span>
             <h1>Let people book time with you without the back-and-forth.</h1>
             <p class="hero-text">
               A calm, premium meeting flow with smart availability, time zone awareness,
@@ -63,6 +70,7 @@
           <div class="hero-visual reveal-up" aria-hidden="true">
             <div class="blob blob-one"></div>
             <div class="blob blob-two"></div>
+
             <div class="device-card floating-card booking-preview">
               <div class="device-header">
                 <span class="device-year">2026</span>
@@ -91,15 +99,17 @@
 
               <div class="sheet">
                 <div class="sheet-pill"></div>
+
                 <div class="meeting-card">
                   <p class="meta-label">Selected date</p>
                   <h3>Thursday, Sep 14</h3>
                   <div class="time-chip-row">
-                    <button class="time-chip selected">09:30</button>
-                    <button class="time-chip">11:00</button>
-                    <button class="time-chip">14:30</button>
+                    <button class="time-chip selected" type="button">09:30</button>
+                    <button class="time-chip" type="button">11:00</button>
+                    <button class="time-chip" type="button">14:30</button>
                   </div>
                 </div>
+
                 <div class="meeting-list">
                   <article>
                     <span class="meeting-dot"></span>
@@ -108,6 +118,7 @@
                       <p>30 min · Google Meet</p>
                     </div>
                   </article>
+
                   <article>
                     <span class="meeting-dot pink"></span>
                     <div>
@@ -121,7 +132,35 @@
           </div>
         </section>
 
-        <section class="content-grid" id="booking">
+        <section class="view-switcher reveal-up" aria-label="Interface modes">
+          <div class="segmented-control" role="tablist" aria-label="Booking and manager views">
+            <button
+              class="segment-button is-active"
+              type="button"
+              role="tab"
+              aria-selected="true"
+              data-view-target="booking"
+            >
+              Booking side
+            </button>
+
+            <button
+              class="segment-button"
+              type="button"
+              role="tab"
+              aria-selected="false"
+              data-view-target="manager"
+            >
+              Manager side
+            </button>
+          </div>
+        </section>
+
+        <section
+          class="content-grid"
+          id="booking"
+          data-view-panel="booking"
+        >
           <div class="booking-panel card reveal-up">
             <div class="section-heading">
               <span class="eyebrow">Public booking side</span>
@@ -133,17 +172,34 @@
             </div>
 
             <div class="meeting-types" role="list" aria-label="Meeting types">
-              <button class="meeting-type active" role="listitem">
+              <button
+                class="meeting-type is-active"
+                type="button"
+                role="listitem"
+                data-meeting-type="intro"
+              >
                 <strong>Quick intro</strong>
-                <span>15 minutes · Ideal for first contact</span>
+                <span>Short first conversation and alignment</span>
               </button>
-              <button class="meeting-type" role="listitem">
-                <strong>Focused meeting</strong>
-                <span>30 minutes · More context, more depth</span>
+
+              <button
+                class="meeting-type"
+                type="button"
+                role="listitem"
+                data-meeting-type="deepdive"
+              >
+                <strong>Deep dive session</strong>
+                <span>Longer call for strategy, planning, or problem solving</span>
               </button>
-              <button class="meeting-type" role="listitem">
-                <strong>Deep dive</strong>
-                <span>60 minutes · Workshops, planning, consulting</span>
+
+              <button
+                class="meeting-type"
+                type="button"
+                role="listitem"
+                data-meeting-type="followup"
+              >
+                <strong>Follow-up meeting</strong>
+                <span>Focused continuation for active work and decisions</span>
               </button>
             </div>
 
@@ -151,50 +207,32 @@
               <div class="availability-topline">
                 <div>
                   <p class="meta-label">Current timezone</p>
-                  <strong>Asia/Jerusalem</strong>
+                  <strong data-timezone-label>Asia/Jerusalem</strong>
                 </div>
+
                 <div>
                   <p class="meta-label">Meeting length</p>
-                  <strong>30 minutes</strong>
+                  <strong data-selected-duration>30 min meeting</strong>
                 </div>
               </div>
 
-              <div class="day-strip" aria-label="Available days">
-                <button class="day-pill active">
-                  <span>Mon</span>
-                  <strong>11</strong>
-                  <small>7 slots</small>
-                </button>
-                <button class="day-pill">
-                  <span>Tue</span>
-                  <strong>12</strong>
-                  <small>4 slots</small>
-                </button>
-                <button class="day-pill muted">
-                  <span>Wed</span>
-                  <strong>13</strong>
-                  <small>Full</small>
-                </button>
-                <button class="day-pill">
-                  <span>Thu</span>
-                  <strong>14</strong>
-                  <small>6 slots</small>
-                </button>
-                <button class="day-pill">
-                  <span>Fri</span>
-                  <strong>15</strong>
-                  <small>3 slots</small>
-                </button>
+              <div
+                class="day-strip"
+                aria-label="Available days"
+                data-date-rail
+              >
               </div>
 
-              <div class="slot-grid" aria-label="Available times">
-                <button class="slot-button active">09:30</button>
-                <button class="slot-button">10:00</button>
-                <button class="slot-button">11:30</button>
-                <button class="slot-button">13:00</button>
-                <button class="slot-button">14:30</button>
-                <button class="slot-button">16:00</button>
+              <div
+                class="slot-grid"
+                aria-label="Available times"
+                data-slot-grid
+              >
               </div>
+
+              <p class="empty-state" data-slot-empty hidden>
+                No slots are available for this day. Try another date or meeting type.
+              </p>
             </div>
           </div>
 
@@ -205,40 +243,60 @@
             </div>
 
             <h3>Your booking summary</h3>
-            <div class="summary-stack">
+
+            <div class="summary-stack" data-booking-summary>
               <div class="summary-row">
-                <span>With</span>
-                <strong>Dor</strong>
+                <span>Meeting</span>
+                <strong>Choose a meeting</strong>
               </div>
               <div class="summary-row">
-                <span>Type</span>
-                <strong>Focused meeting</strong>
+                <span>When</span>
+                <strong>Choose a time</strong>
               </div>
               <div class="summary-row">
-                <span>Time</span>
-                <strong>Thu, Sep 14 · 09:30</strong>
-              </div>
-              <div class="summary-row">
-                <span>Location</span>
-                <strong>Google Meet</strong>
+                <span>Timezone</span>
+                <strong>Asia/Jerusalem</strong>
               </div>
             </div>
 
-            <form class="booking-form" aria-label="Booking details form">
+            <form class="booking-form" data-booking-form aria-label="Booking details form">
               <label>
                 <span>Full name</span>
-                <input type="text" placeholder="Your name" />
+                <input
+                  id="booking-name"
+                  type="text"
+                  name="fullName"
+                  placeholder="Your name"
+                  autocomplete="name"
+                />
               </label>
+
               <label>
                 <span>Email address</span>
-                <input type="email" placeholder="you@example.com" />
+                <input
+                  id="booking-email"
+                  type="email"
+                  name="email"
+                  placeholder="you@example.com"
+                  autocomplete="email"
+                />
               </label>
+
               <label>
                 <span>What should we cover?</span>
-                <textarea placeholder="Add a short note so the meeting starts with context."></textarea>
+                <textarea
+                  id="booking-notes"
+                  name="notes"
+                  placeholder="Add a short note so the meeting starts with context."
+                ></textarea>
               </label>
-              <button class="primary-button full-width" type="button">Confirm booking</button>
+
+              <button class="primary-button full-width" type="submit">
+                Confirm booking
+              </button>
             </form>
+
+            <div class="booking-success" data-booking-success hidden></div>
           </aside>
         </section>
 
@@ -256,6 +314,7 @@
                 notice periods, and booking rules.
               </p>
             </article>
+
             <article class="feature-card card reveal-up">
               <h3>Manager-side controls</h3>
               <p>
@@ -263,6 +322,7 @@
                 restraints without touching code.
               </p>
             </article>
+
             <article class="feature-card card reveal-up">
               <h3>Responsive by default</h3>
               <p>
@@ -273,58 +333,199 @@
           </div>
         </section>
 
-        <section class="manager-shell card reveal-up" id="manager">
-          <div class="manager-header">
+        <section
+          class="manager-shell reveal-up"
+          id="manager"
+          data-view-panel="manager"
+          hidden
+        >
+          <div class="manager-header card">
             <div>
               <span class="eyebrow">Manager side</span>
               <h2>Control your availability and booking rules</h2>
+              <p>
+                This side is designed for managing working hours, restrictions, Google
+                Calendar connection, and scheduling behavior.
+              </p>
             </div>
-            <button class="ghost-button">Sign in securely</button>
+
+            <button
+              class="ghost-button"
+              type="button"
+              data-manager-signout
+            >
+              Sign out
+            </button>
           </div>
 
-          <div class="manager-grid">
-            <div class="admin-login-panel card soft-panel">
+          <div class="manager-gate card soft-panel" data-manager-gate>
+            <div class="manager-gate__intro">
               <h3>Secure manager access</h3>
               <p>
-                This area is prepared for authentication, Google account connection, and
-                admin-only controls.
+                Sign in to connect your calendar, define your availability, and manage
+                booking constraints.
               </p>
-              <div class="login-options">
-                <button class="auth-button google">
-                  <span class="auth-mark">G</span>
+            </div>
+
+            <form class="manager-login-form" data-manager-login>
+              <label>
+                <span>Manager email</span>
+                <input
+                  id="manager-email"
+                  type="email"
+                  placeholder="admin@example.com"
+                  autocomplete="username"
+                />
+              </label>
+
+              <label>
+                <span>Password</span>
+                <input
+                  id="manager-password"
+                  type="password"
+                  placeholder="Enter password"
+                  autocomplete="current-password"
+                />
+              </label>
+
+              <div class="manager-login-actions">
+                <button class="primary-button" type="submit">
+                  Sign in
+                </button>
+
+                <button
+                  class="secondary-button"
+                  type="button"
+                  data-google-connect="public"
+                >
                   Continue with Google
                 </button>
-                <button class="auth-button">Continue with email</button>
               </div>
-              <div class="status-chip live">Google Calendar connection required</div>
+
+              <p class="helper-text">
+                Demo credentials are controlled in <code>config/availability.json</code>.
+              </p>
+            </form>
+          </div>
+
+          <div class="manager-grid" data-manager-shell hidden>
+            <div class="admin-login-panel card soft-panel">
+              <div class="settings-header">
+                <h3>Calendar connection</h3>
+                <span class="status-chip live" data-google-status>
+                  Google Calendar is not connected yet
+                </span>
+              </div>
+
+              <p>
+                Connect your Google Calendar so the booking side can reflect real
+                availability and eventually create actual events.
+              </p>
+
+              <div class="login-options">
+                <button
+                  class="auth-button google"
+                  type="button"
+                  data-google-connect="manager"
+                >
+                  <span class="auth-mark">G</span>
+                  Connect Google Calendar
+                </button>
+              </div>
+
+              <div class="info-stack">
+                <div class="summary-row">
+                  <span>Provider</span>
+                  <strong>Google Calendar</strong>
+                </div>
+                <div class="summary-row">
+                  <span>Sync mode</span>
+                  <strong>Two-way booking flow</strong>
+                </div>
+              </div>
             </div>
 
             <div class="availability-settings card soft-panel">
               <div class="settings-header">
                 <h3>Availability presets</h3>
-                <span class="status-chip">Draft layout</span>
+                <span class="status-chip">Manager controls</span>
               </div>
 
-              <div class="settings-grid">
-                <div class="setting-box">
-                  <span class="meta-label">Working days</span>
-                  <strong>Sun - Thu</strong>
-                  <p>Choose active booking days.</p>
-                </div>
-                <div class="setting-box">
-                  <span class="meta-label">Hours</span>
-                  <strong>10:00 - 18:00</strong>
-                  <p>Boundaries for bookable slots.</p>
-                </div>
-                <div class="setting-box">
-                  <span class="meta-label">Buffer</span>
-                  <strong>15 min</strong>
-                  <p>Protect time between meetings.</p>
-                </div>
-                <div class="setting-box">
-                  <span class="meta-label">Notice period</span>
-                  <strong>12 hours</strong>
-                  <p>Prevent last-minute stress.</p>
+              <div class="settings-form-grid">
+                <label class="setting-field">
+                  <span>Working day start</span>
+                  <input id="availability-start" type="time" />
+                </label>
+
+                <label class="setting-field">
+                  <span>Working day end</span>
+                  <input id="availability-end" type="time" />
+                </label>
+
+                <label class="setting-field">
+                  <span>Default duration (minutes)</span>
+                  <input id="slot-duration" type="number" min="5" step="5" />
+                </label>
+
+                <label class="setting-field">
+                  <span>Buffer between meetings (minutes)</span>
+                  <input id="buffer-minutes" type="number" min="0" step="5" />
+                </label>
+
+                <label class="setting-field">
+                  <span>Max meetings per day</span>
+                  <input id="max-meetings-per-day" type="number" min="1" step="1" />
+                </label>
+
+                <label class="setting-field">
+                  <span>Minimum notice (hours)</span>
+                  <input id="minimum-notice-hours" type="number" min="0" step="1" />
+                </label>
+
+                <label class="setting-field setting-field--full">
+                  <span>Booking window (days ahead)</span>
+                  <input id="booking-window-days" type="number" min="1" step="1" />
+                </label>
+              </div>
+
+              <div class="weekday-selector">
+                <p class="meta-label">Working days</p>
+
+                <div class="weekday-list" role="group" aria-label="Working days selection">
+                  <label class="weekday-pill">
+                    <input type="checkbox" data-weekday="0" />
+                    <span>Mon</span>
+                  </label>
+
+                  <label class="weekday-pill">
+                    <input type="checkbox" data-weekday="1" />
+                    <span>Tue</span>
+                  </label>
+
+                  <label class="weekday-pill">
+                    <input type="checkbox" data-weekday="2" />
+                    <span>Wed</span>
+                  </label>
+
+                  <label class="weekday-pill">
+                    <input type="checkbox" data-weekday="3" />
+                    <span>Thu</span>
+                  </label>
+
+                  <label class="weekday-pill">
+                    <input type="checkbox" data-weekday="4" />
+                    <span>Fri</span>
+                  </label>
+
+                  <label class="weekday-pill">
+                    <input type="checkbox" data-weekday="5" />
+                    <span>Sat</span>
+                  </label>
+
+                  <label class="weekday-pill">
+                    <input type="checkbox" data-weekday="6" />
+                    <span>Sun</span>
+                  </label>
                 </div>
               </div>
 
@@ -332,29 +533,43 @@
                 <div class="toggle-row">
                   <div>
                     <strong>Prevent double bookings</strong>
-                    <p>Uses Google Calendar busy state before confirming a meeting.</p>
+                    <p>Will use real busy state when Google Calendar is connected.</p>
                   </div>
                   <span class="toggle on"></span>
                 </div>
+
                 <div class="toggle-row">
                   <div>
-                    <strong>Block weekends automatically</strong>
-                    <p>Applies a recurring restriction to Friday and Saturday.</p>
+                    <strong>Respect notice periods</strong>
+                    <p>Prevents last-minute bookings based on your configuration.</p>
                   </div>
                   <span class="toggle on"></span>
                 </div>
+
                 <div class="toggle-row">
                   <div>
-                    <strong>Require approval for custom requests</strong>
-                    <p>Lets you manually approve meetings outside your normal slots.</p>
+                    <strong>Buffer between meetings</strong>
+                    <p>Protects focus time and avoids back-to-back overload.</p>
                   </div>
-                  <span class="toggle"></span>
+                  <span class="toggle on"></span>
                 </div>
+              </div>
+
+              <div class="manager-actions">
+                <button
+                  class="primary-button"
+                  type="button"
+                  data-save-availability
+                >
+                  Save availability
+                </button>
               </div>
             </div>
           </div>
         </section>
       </main>
     </div>
+
+    <script src="./app.js"></script>
   </body>
 </html>
