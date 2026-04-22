@@ -20,9 +20,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   cacheDom();
   bindEvents();
   await loadAvailability();
+  await hydrateGoogleStatus();
   renderAll();
 });
-
 function cacheDom() {
   dom.viewTabs = document.querySelectorAll("[data-view-target]");
   dom.viewPanels = document.querySelectorAll("[data-view-panel]");
@@ -318,11 +318,11 @@ function renderManager() {
   if (!isAuthed || !state.availability) return;
 
   if (dom.managerGoogleStatus) {
-    const calendar = state.availability.calendar;
-    dom.managerGoogleStatus.textContent = calendar.connected
-      ? `Connected to Google Calendar (${calendar.calendarId})`
-      : "Google Calendar is not connected yet";
-  }
+  const calendar = state.availability.calendar;
+  dom.managerGoogleStatus.textContent = calendar.connected
+    ? calendar.connectionLabel || `Connected to Google Calendar (${calendar.calendarId})`
+    : "Google Calendar is not connected yet";
+}
 
   const booking = state.availability.booking;
 
@@ -356,15 +356,32 @@ function handleManagerLogin() {
 
   alert("Invalid demo credentials. Check availability.json for the current values.");
 }
+async function hydrateGoogleStatus() {
+  try {
+    const response = await fetch("/api/auth?action=status", {
+      method: "GET",
+      credentials: "include"
+    });
 
+    if (!response.ok) return;
+
+    const data = await response.json();
+
+    if (!state.availability) return;
+
+    state.availability.calendar.connected = Boolean(data.connected);
+    state.availability.calendar.calendarId = data.calendarId || "primary";
+    state.availability.calendar.connectionLabel = data.connected
+      ? `Connected as ${data.email || "Google account"}`
+      : "Not connected yet";
+  } catch (error) {
+    console.warn("Could not hydrate Google auth status:", error);
+  }
+}
 function simulateGoogleConnect(source) {
-  if (!state.availability) return;
-
-  if (source === "manager") {
-    state.availability.calendar.connected = true;
-    state.availability.calendar.connectionLabel = "Connected in demo mode";
-    renderManager();
-    return;
+  const url = `/api/auth?action=start&source=${encodeURIComponent(source || "manager")}`;
+  window.location.href = url;
+}
   }
 
   alert("This is currently a frontend placeholder. Later it should connect to api/auth.js.");
