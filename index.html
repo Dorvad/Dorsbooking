@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dor | Meeting Scheduler</title>
+    <meta
+      name="description"
+      content="A modern booking experience with Google Calendar sync and an admin side for managing availability."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <a class="brand" href="#hero" aria-label="Meeting scheduler home">
+          <span class="brand-mark"></span>
+          <span class="brand-text">Dor Scheduler</span>
+        </a>
+
+        <nav class="topnav" aria-label="Primary navigation">
+          <a href="#booking">Book</a>
+          <a href="#how-it-works">How it works</a>
+          <a href="#manager">Manager</a>
+        </nav>
+
+        <div class="topbar-actions">
+          <button class="ghost-button">Join waitlist</button>
+          <a class="primary-button" href="#manager">Manager login</a>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero" id="hero">
+          <div class="hero-copy card glass-card reveal-up">
+            <span class="eyebrow">Fast scheduling · Google Calendar connected</span>
+            <h1>Let people book time with you without the back-and-forth.</h1>
+            <p class="hero-text">
+              A calm, premium meeting flow with smart availability, time zone awareness,
+              booking constraints, and a dedicated manager side for controlling your
+              schedule.
+            </p>
+
+            <div class="hero-actions">
+              <a class="primary-button" href="#booking">Book a meeting</a>
+              <a class="secondary-button" href="#manager">Open manager side</a>
+            </div>
+
+            <ul class="trust-row" aria-label="Key product capabilities">
+              <li>Google Calendar sync</li>
+              <li>Responsive booking flow</li>
+              <li>Admin controls</li>
+            </ul>
+          </div>
+
+          <div class="hero-visual reveal-up" aria-hidden="true">
+            <div class="blob blob-one"></div>
+            <div class="blob blob-two"></div>
+            <div class="device-card floating-card booking-preview">
+              <div class="device-header">
+                <span class="device-year">2026</span>
+                <div class="device-actions">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              </div>
+
+              <div class="preview-gradient">
+                <p class="preview-month">September</p>
+                <div class="mini-calendar-grid">
+                  <span>12</span>
+                  <span>13</span>
+                  <span class="active">14</span>
+                  <span>15</span>
+                  <span>16</span>
+                  <span>19</span>
+                  <span>20</span>
+                  <span>21</span>
+                  <span>22</span>
+                  <span>23</span>
+                </div>
+              </div>
+
+              <div class="sheet">
+                <div class="sheet-pill"></div>
+                <div class="meeting-card">
+                  <p class="meta-label">Selected date</p>
+                  <h3>Thursday, Sep 14</h3>
+                  <div class="time-chip-row">
+                    <button class="time-chip selected">09:30</button>
+                    <button class="time-chip">11:00</button>
+                    <button class="time-chip">14:30</button>
+                  </div>
+                </div>
+                <div class="meeting-list">
+                  <article>
+                    <span class="meeting-dot"></span>
+                    <div>
+                      <strong>Strategy session</strong>
+                      <p>30 min · Google Meet</p>
+                    </div>
+                  </article>
+                  <article>
+                    <span class="meeting-dot pink"></span>
+                    <div>
+                      <strong>Intro call</strong>
+                      <p>15 min · Phone / Meet</p>
+                    </div>
+                  </article>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="content-grid" id="booking">
+          <div class="booking-panel card reveal-up">
+            <div class="section-heading">
+              <span class="eyebrow">Public booking side</span>
+              <h2>Choose a meeting and pick an available slot</h2>
+              <p>
+                The flow is designed to stay lightweight, reduce decision fatigue, and
+                make time zone context visible without overwhelming the user.
+              </p>
+            </div>
+
+            <div class="meeting-types" role="list" aria-label="Meeting types">
+              <button class="meeting-type active" role="listitem">
+                <strong>Quick intro</strong>
+                <span>15 minutes · Ideal for first contact</span>
+              </button>
+              <button class="meeting-type" role="listitem">
+                <strong>Focused meeting</strong>
+                <span>30 minutes · More context, more depth</span>
+              </button>
+              <button class="meeting-type" role="listitem">
+                <strong>Deep dive</strong>
+                <span>60 minutes · Workshops, planning, consulting</span>
+              </button>
+            </div>
+
+            <div class="availability-card">
+              <div class="availability-topline">
+                <div>
+                  <p class="meta-label">Current timezone</p>
+                  <strong>Asia/Jerusalem</strong>
+                </div>
+                <div>
+                  <p class="meta-label">Meeting length</p>
+                  <strong>30 minutes</strong>
+                </div>
+              </div>
+
+              <div class="day-strip" aria-label="Available days">
+                <button class="day-pill active">
+                  <span>Mon</span>
+                  <strong>11</strong>
+                  <small>7 slots</small>
+                </button>
+                <button class="day-pill">
+                  <span>Tue</span>
+                  <strong>12</strong>
+                  <small>4 slots</small>
+                </button>
+                <button class="day-pill muted">
+                  <span>Wed</span>
+                  <strong>13</strong>
+                  <small>Full</small>
+                </button>
+                <button class="day-pill">
+                  <span>Thu</span>
+                  <strong>14</strong>
+                  <small>6 slots</small>
+                </button>
+                <button class="day-pill">
+                  <span>Fri</span>
+                  <strong>15</strong>
+                  <small>3 slots</small>
+                </button>
+              </div>
+
+              <div class="slot-grid" aria-label="Available times">
+                <button class="slot-button active">09:30</button>
+                <button class="slot-button">10:00</button>
+                <button class="slot-button">11:30</button>
+                <button class="slot-button">13:00</button>
+                <button class="slot-button">14:30</button>
+                <button class="slot-button">16:00</button>
+              </div>
+            </div>
+          </div>
+
+          <aside class="summary-panel card reveal-up">
+            <div class="confirmation-badge">
+              <span class="confirmation-icon"></span>
+              <span>Designed for clarity and trust</span>
+            </div>
+
+            <h3>Your booking summary</h3>
+            <div class="summary-stack">
+              <div class="summary-row">
+                <span>With</span>
+                <strong>Dor</strong>
+              </div>
+              <div class="summary-row">
+                <span>Type</span>
+                <strong>Focused meeting</strong>
+              </div>
+              <div class="summary-row">
+                <span>Time</span>
+                <strong>Thu, Sep 14 · 09:30</strong>
+              </div>
+              <div class="summary-row">
+                <span>Location</span>
+                <strong>Google Meet</strong>
+              </div>
+            </div>
+
+            <form class="booking-form" aria-label="Booking details form">
+              <label>
+                <span>Full name</span>
+                <input type="text" placeholder="Your name" />
+              </label>
+              <label>
+                <span>Email address</span>
+                <input type="email" placeholder="you@example.com" />
+              </label>
+              <label>
+                <span>What should we cover?</span>
+                <textarea placeholder="Add a short note so the meeting starts with context."></textarea>
+              </label>
+              <button class="primary-button full-width" type="button">Confirm booking</button>
+            </form>
+          </aside>
+        </section>
+
+        <section class="features" id="how-it-works">
+          <div class="section-heading centered reveal-up">
+            <span class="eyebrow">Architecture-ready experience</span>
+            <h2>Built for real scheduling, not just a pretty demo</h2>
+          </div>
+
+          <div class="feature-grid">
+            <article class="feature-card card reveal-up">
+              <h3>Google Calendar layer</h3>
+              <p>
+                Availability is derived from your calendar, buffers, blackout windows,
+                notice periods, and booking rules.
+              </p>
+            </article>
+            <article class="feature-card card reveal-up">
+              <h3>Manager-side controls</h3>
+              <p>
+                You can log in, connect your calendar, define schedules, and set meeting
+                restraints without touching code.
+              </p>
+            </article>
+            <article class="feature-card card reveal-up">
+              <h3>Responsive by default</h3>
+              <p>
+                Layout, spacing, hit areas, and hierarchy are designed to feel calm on
+                mobile, tablet, and desktop.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="manager-shell card reveal-up" id="manager">
+          <div class="manager-header">
+            <div>
+              <span class="eyebrow">Manager side</span>
+              <h2>Control your availability and booking rules</h2>
+            </div>
+            <button class="ghost-button">Sign in securely</button>
+          </div>
+
+          <div class="manager-grid">
+            <div class="admin-login-panel card soft-panel">
+              <h3>Secure manager access</h3>
+              <p>
+                This area is prepared for authentication, Google account connection, and
+                admin-only controls.
+              </p>
+              <div class="login-options">
+                <button class="auth-button google">
+                  <span class="auth-mark">G</span>
+                  Continue with Google
+                </button>
+                <button class="auth-button">Continue with email</button>
+              </div>
+              <div class="status-chip live">Google Calendar connection required</div>
+            </div>
+
+            <div class="availability-settings card soft-panel">
+              <div class="settings-header">
+                <h3>Availability presets</h3>
+                <span class="status-chip">Draft layout</span>
+              </div>
+
+              <div class="settings-grid">
+                <div class="setting-box">
+                  <span class="meta-label">Working days</span>
+                  <strong>Sun - Thu</strong>
+                  <p>Choose active booking days.</p>
+                </div>
+                <div class="setting-box">
+                  <span class="meta-label">Hours</span>
+                  <strong>10:00 - 18:00</strong>
+                  <p>Boundaries for bookable slots.</p>
+                </div>
+                <div class="setting-box">
+                  <span class="meta-label">Buffer</span>
+                  <strong>15 min</strong>
+                  <p>Protect time between meetings.</p>
+                </div>
+                <div class="setting-box">
+                  <span class="meta-label">Notice period</span>
+                  <strong>12 hours</strong>
+                  <p>Prevent last-minute stress.</p>
+                </div>
+              </div>
+
+              <div class="toggle-list" aria-label="Availability constraints preview">
+                <div class="toggle-row">
+                  <div>
+                    <strong>Prevent double bookings</strong>
+                    <p>Uses Google Calendar busy state before confirming a meeting.</p>
+                  </div>
+                  <span class="toggle on"></span>
+                </div>
+                <div class="toggle-row">
+                  <div>
+                    <strong>Block weekends automatically</strong>
+                    <p>Applies a recurring restriction to Friday and Saturday.</p>
+                  </div>
+                  <span class="toggle on"></span>
+                </div>
+                <div class="toggle-row">
+                  <div>
+                    <strong>Require approval for custom requests</strong>
+                    <p>Lets you manually approve meetings outside your normal slots.</p>
+                  </div>
+                  <span class="toggle"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
