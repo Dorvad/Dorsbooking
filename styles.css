@@ -1,22 +1,22 @@
 :root {
-  --bg: #07111f;
-  --bg-elevated: rgba(13, 23, 40, 0.78);
-  --panel: rgba(18, 30, 52, 0.82);
-  --panel-strong: rgba(15, 24, 43, 0.94);
-  --panel-soft: rgba(255, 255, 255, 0.06);
-  --border: rgba(255, 255, 255, 0.1);
-  --border-strong: rgba(255, 255, 255, 0.18);
-  --text: #f4f7fb;
-  --text-soft: rgba(244, 247, 251, 0.72);
-  --text-muted: rgba(244, 247, 251, 0.52);
-  --primary: #7c9cff;
-  --primary-strong: #9d8cff;
-  --accent: #62e8c7;
-  --accent-soft: rgba(98, 232, 199, 0.16);
-  --danger: #ff8d8d;
-  --shadow-xl: 0 30px 80px rgba(0, 0, 0, 0.34);
-  --shadow-lg: 0 18px 42px rgba(0, 0, 0, 0.28);
-  --shadow-md: 0 10px 24px rgba(0, 0, 0, 0.2);
+  --bg: #f5f4fb;
+  --bg-elevated: rgba(255, 255, 255, 0.88);
+  --panel: rgba(255, 255, 255, 0.95);
+  --panel-strong: #ffffff;
+  --panel-soft: #f8f9ff;
+  --border: rgba(97, 118, 158, 0.2);
+  --border-strong: rgba(97, 118, 158, 0.34);
+  --text: #1d2233;
+  --text-soft: rgba(29, 34, 51, 0.74);
+  --text-muted: rgba(29, 34, 51, 0.54);
+  --primary: #4e6dff;
+  --primary-strong: #6f57f3;
+  --accent: #23c5a2;
+  --accent-soft: rgba(35, 197, 162, 0.16);
+  --danger: #d93a56;
+  --shadow-xl: 0 28px 64px rgba(65, 84, 126, 0.16);
+  --shadow-lg: 0 16px 38px rgba(69, 88, 129, 0.13);
+  --shadow-md: 0 10px 24px rgba(67, 85, 124, 0.11);
   --radius-xl: 32px;
   --radius-lg: 24px;
   --radius-md: 18px;
@@ -34,7 +34,7 @@
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
   scroll-behavior: smooth;
 }
 
@@ -43,10 +43,10 @@ body {
   min-height: 100vh;
   font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background:
-    radial-gradient(circle at 15% 20%, rgba(124, 156, 255, 0.14), transparent 0 28%),
-    radial-gradient(circle at 85% 18%, rgba(157, 140, 255, 0.14), transparent 0 24%),
-    radial-gradient(circle at 50% 100%, rgba(98, 232, 199, 0.08), transparent 0 28%),
-    linear-gradient(180deg, #06101d 0%, #081221 42%, #0a1324 100%);
+    radial-gradient(circle at 10% 14%, rgba(112, 128, 255, 0.16), transparent 0 28%),
+    radial-gradient(circle at 88% 8%, rgba(188, 141, 255, 0.18), transparent 0 24%),
+    radial-gradient(circle at 52% 100%, rgba(35, 197, 162, 0.1), transparent 0 28%),
+    linear-gradient(180deg, #f7f6fd 0%, #f4f6ff 45%, #eef3ff 100%);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -81,7 +81,7 @@ select {
   width: 100%;
   border: 1px solid var(--border);
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.045);
+  background: #ffffff;
   color: var(--text);
   padding: 0.95rem 1rem;
   outline: none;
@@ -94,15 +94,15 @@ select {
 
 input::placeholder,
 textarea::placeholder {
-  color: rgba(244, 247, 251, 0.35);
+  color: rgba(34, 44, 69, 0.38);
 }
 
 input:focus,
 textarea:focus,
 select:focus {
-  border-color: rgba(124, 156, 255, 0.8);
-  background: rgba(255, 255, 255, 0.065);
-  box-shadow: 0 0 0 4px rgba(124, 156, 255, 0.14);
+  border-color: rgba(78, 109, 255, 0.64);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(78, 109, 255, 0.15);
 }
 
 textarea {
@@ -134,8 +134,8 @@ code {
   min-height: var(--topbar-height);
   padding: 16px 22px;
   margin-bottom: 28px;
-  background: rgba(9, 17, 31, 0.58);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(109, 130, 175, 0.22);
   border-radius: 26px;
   backdrop-filter: blur(var(--blur));
   -webkit-backdrop-filter: blur(var(--blur));
@@ -186,7 +186,7 @@ code {
 .topnav a:hover,
 .topnav a:focus-visible {
   color: var(--text);
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(88, 109, 184, 0.1);
 }
 
 .topbar-actions {
@@ -229,8 +229,8 @@ code {
 }
 
 .primary-button {
-  color: #08101d;
-  background: linear-gradient(135deg, #ffffff 0%, #cfe0ff 34%, #92b3ff 72%, #82f1d3 100%);
+  color: #ffffff;
+  background: linear-gradient(135deg, #4a6bff 0%, #5a8dff 52%, #38cbb0 100%);
   box-shadow:
     0 10px 26px rgba(124, 156, 255, 0.24),
     inset 0 1px 0 rgba(255, 255, 255, 0.6);
@@ -240,8 +240,8 @@ code {
 .primary-button:focus-visible {
   transform: translateY(-1px);
   box-shadow:
-    0 16px 34px rgba(124, 156, 255, 0.28),
-    inset 0 1px 0 rgba(255, 255, 255, 0.68);
+    0 16px 34px rgba(78, 109, 255, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
 }
 
 .primary-button:disabled {
@@ -255,8 +255,8 @@ code {
 .ghost-button,
 .auth-button {
   color: var(--text);
-  background: rgba(255, 255, 255, 0.055);
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(104, 128, 176, 0.22);
 }
 
 .secondary-button:hover,
@@ -266,8 +266,8 @@ code {
 .auth-button:hover,
 .auth-button:focus-visible {
   transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.085);
-  border-color: rgba(255, 255, 255, 0.14);
+  background: #fff;
+  border-color: rgba(88, 112, 167, 0.34);
 }
 
 .full-width {
@@ -292,7 +292,7 @@ main {
 }
 
 .soft-panel {
-  background: rgba(255, 255, 255, 0.045);
+  background: #fcfcff;
 }
 
 .reveal-up {
@@ -330,7 +330,7 @@ main {
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #c4d4ff;
+  color: #5f75d3;
 }
 
 .eyebrow::before {
@@ -353,6 +353,7 @@ main {
 .hero h1 {
   font-size: clamp(2.5rem, 5vw, 4.9rem);
   max-width: 12ch;
+  color: #121727;
 }
 
 .hero-text,
@@ -393,15 +394,15 @@ main {
 .trust-row li {
   padding: 10px 14px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.055);
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(98, 120, 167, 0.22);
   color: var(--text-soft);
   font-size: 0.92rem;
 }
 
 .hero-visual {
   position: relative;
-  min-height: 620px;
+  min-height: 560px;
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -437,10 +438,8 @@ main {
   width: min(100%, 500px);
   padding: 18px;
   border-radius: 34px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.025)),
-    rgba(7, 14, 26, 0.86);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border: 1px solid rgba(115, 135, 177, 0.24);
   box-shadow: var(--shadow-xl);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -490,7 +489,7 @@ main {
   padding: 24px 22px;
   border-radius: 26px;
   background:
-    linear-gradient(145deg, rgba(149, 122, 255, 0.9), rgba(89, 125, 255, 0.88) 56%, rgba(86, 225, 201, 0.82));
+    linear-gradient(145deg, rgba(96, 118, 255, 0.94), rgba(56, 144, 244, 0.9) 56%, rgba(42, 212, 181, 0.86));
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
@@ -527,8 +526,8 @@ main {
   margin-top: 16px;
   padding: 18px;
   border-radius: 28px;
-  background: rgba(9, 15, 28, 0.96);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: #fbfcff;
+  border: 1px solid rgba(105, 124, 169, 0.18);
 }
 
 .sheet-pill {
@@ -545,8 +544,8 @@ main {
 .setting-box,
 .success-card,
 .info-stack {
-  background: rgba(255, 255, 255, 0.045);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: #ffffff;
+  border: 1px solid rgba(104, 126, 172, 0.18);
 }
 
 .meeting-card {
@@ -571,8 +570,8 @@ main {
 .slot-button,
 .date-chip,
 .day-pill {
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(110, 131, 176, 0.2);
+  background: #fff;
   color: var(--text);
   transition:
     transform var(--transition),
@@ -594,9 +593,9 @@ main {
 .day-pill.active,
 .segment-button.is-active,
 .meeting-type.is-active {
-  background: linear-gradient(135deg, rgba(124, 156, 255, 0.24), rgba(98, 232, 199, 0.14));
-  border-color: rgba(146, 184, 255, 0.5);
-  box-shadow: 0 10px 22px rgba(77, 114, 198, 0.18);
+  background: linear-gradient(135deg, rgba(86, 114, 255, 0.17), rgba(35, 197, 162, 0.12));
+  border-color: rgba(94, 125, 255, 0.42);
+  box-shadow: 0 12px 26px rgba(79, 110, 204, 0.18);
 }
 
 .time-chip:hover,
@@ -612,7 +611,7 @@ main {
 .segment-button:focus-visible,
 .meeting-type:focus-visible {
   transform: translateY(-1px);
-  border-color: rgba(255, 255, 255, 0.16);
+  border-color: rgba(87, 111, 167, 0.36);
 }
 
 .meeting-list {
@@ -660,8 +659,8 @@ main {
   gap: 8px;
   padding: 8px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.045);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(108, 130, 176, 0.22);
   box-shadow: var(--shadow-md);
 }
 
@@ -727,8 +726,8 @@ main {
   padding: 18px;
   text-align: left;
   border-radius: 22px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(110, 133, 179, 0.18);
+  background: #fff;
 }
 
 .meeting-type strong {
@@ -745,8 +744,8 @@ main {
 .availability-card {
   padding: 20px;
   border-radius: 28px;
-  background: rgba(255, 255, 255, 0.045);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: #f9faff;
+  border: 1px solid rgba(106, 130, 177, 0.2);
 }
 
 .availability-topline {
@@ -837,8 +836,8 @@ main {
   margin: 16px 0 0;
   padding: 14px 16px;
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px dashed rgba(255, 255, 255, 0.12);
+  background: #ffffff;
+  border: 1px dashed rgba(103, 127, 172, 0.4);
 }
 
 .confirmation-badge {
@@ -849,7 +848,7 @@ main {
   border-radius: 999px;
   background: rgba(98, 232, 199, 0.09);
   border: 1px solid rgba(98, 232, 199, 0.18);
-  color: #d6fff4;
+  color: #147964;
   font-weight: 600;
   font-size: 0.92rem;
 }
@@ -885,7 +884,7 @@ main {
   gap: 14px;
   align-items: baseline;
   padding: 12px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(111, 135, 181, 0.16);
 }
 
 .summary-row:last-child {
@@ -1029,8 +1028,8 @@ main {
   min-height: 34px;
   padding: 0 12px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #ffffff;
+  border: 1px solid rgba(111, 133, 179, 0.2);
   color: var(--text-soft);
   font-size: 0.88rem;
   font-weight: 700;
@@ -1089,8 +1088,8 @@ main {
   min-height: 44px;
   padding: 0 14px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(111, 132, 176, 0.22);
+  background: #fff;
   transition:
     transform var(--transition),
     border-color var(--transition),
@@ -1112,9 +1111,9 @@ main {
 }
 
 .weekday-pill:has(input:checked) {
-  background: linear-gradient(135deg, rgba(124, 156, 255, 0.24), rgba(98, 232, 199, 0.14));
-  border-color: rgba(146, 184, 255, 0.5);
-  box-shadow: 0 10px 22px rgba(77, 114, 198, 0.18);
+  background: linear-gradient(135deg, rgba(79, 108, 255, 0.16), rgba(35, 197, 162, 0.12));
+  border-color: rgba(79, 108, 255, 0.42);
+  box-shadow: 0 10px 22px rgba(77, 114, 198, 0.15);
 }
 
 .toggle-list {
@@ -1129,7 +1128,7 @@ main {
   gap: 16px;
   align-items: center;
   padding: 16px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid rgba(111, 135, 181, 0.16);
 }
 
 .toggle-row:first-child {
@@ -1152,8 +1151,8 @@ main {
   width: 52px;
   height: 30px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(80, 100, 150, 0.22);
+  border: 1px solid rgba(102, 126, 176, 0.2);
 }
 
 .toggle::after {
@@ -1203,7 +1202,7 @@ main {
 
 :focus-visible {
   outline: none;
-  box-shadow: 0 0 0 4px rgba(124, 156, 255, 0.18);
+  box-shadow: 0 0 0 4px rgba(78, 109, 255, 0.2);
 }
 
 @media (max-width: 1180px) {
@@ -1243,6 +1242,13 @@ main {
     justify-content: flex-start;
   }
 
+  .topnav {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+    width: 100%;
+  }
+
   .hero-copy,
   .booking-panel,
   .summary-panel,
@@ -1279,8 +1285,13 @@ main {
 }
 
 @media (max-width: 640px) {
+  .page-shell {
+    width: min(calc(100% - 14px), var(--container));
+    padding-bottom: 52px;
+  }
+
   .hero-visual {
-    min-height: 420px;
+    min-height: 360px;
   }
 
   .hero h1 {
@@ -1305,6 +1316,8 @@ main {
 
   .segmented-control {
     width: 100%;
+    border-radius: 20px;
+    grid-template-columns: 1fr;
   }
 
   .slot-grid,
@@ -1314,7 +1327,8 @@ main {
 
   .date-chip,
   .day-pill {
-    min-height: 96px;
+    min-height: 88px;
+    border-radius: 16px;
   }
 
   .summary-row {
@@ -1327,13 +1341,28 @@ main {
   }
 
   .device-card {
-    padding: 14px;
-    border-radius: 28px;
+    padding: 12px;
+    border-radius: 24px;
   }
 
   .preview-gradient,
   .sheet {
-    border-radius: 22px;
+    border-radius: 18px;
+  }
+
+  .meeting-type {
+    padding: 14px;
+    border-radius: 16px;
+  }
+
+  .booking-panel,
+  .summary-panel,
+  .manager-header,
+  .manager-gate,
+  .admin-login-panel,
+  .availability-settings {
+    padding: 18px;
+    border-radius: 20px;
   }
 }
 
