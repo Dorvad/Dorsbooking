@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Book a meeting quickly and easily." />
+    <title>Dorsbooking</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header role="banner">
+      <h1>Dorsbooking</h1>
+      <nav aria-label="Main navigation">
+        <a href="#book">Book</a>
+        <a href="#manage">Manage</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- Public booking view -->
+      <section id="book" aria-labelledby="book-heading">
+        <h2 id="book-heading">Schedule a Meeting</h2>
+        <!-- Booking form will be rendered here by app.js -->
+        <div id="booking-root"></div>
+      </section>
+
+      <!-- Private manager view (hidden until authenticated) -->
+      <section id="manage" aria-labelledby="manage-heading" hidden>
+        <h2 id="manage-heading">Manage Availability</h2>
+        <!-- Manager UI will be rendered here by app.js -->
+        <div id="manager-root"></div>
+      </section>
+    </main>
+
+    <footer role="contentinfo">
+      <p>&copy; 2026 Dorsbooking</p>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

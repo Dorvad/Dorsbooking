@@ -1,0 +1,110 @@
+/*
+ * styles.css
+ * Global styles for Dorsbooking.
+ * Mobile-first: base styles target small screens; larger breakpoints
+ * are added via min-width media queries below.
+ */
+
+/* ── Reset ───────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Tokens ──────────────────────────────────────────────────────── */
+:root {
+  --color-bg:        #ffffff;
+  --color-surface:   #f5f7fa;
+  --color-primary:   #2563eb;
+  --color-primary-h: #1d4ed8;
+  --color-text:      #111827;
+  --color-muted:     #6b7280;
+  --color-border:    #e5e7eb;
+
+  --radius:    0.5rem;
+  --gap:       1rem;
+  --max-width: 48rem;
+}
+
+/* ── Base ────────────────────────────────────────────────────────── */
+html {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
+body {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ── Layout ──────────────────────────────────────────────────────── */
+header {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--gap);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+}
+
+header h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+header nav {
+  display: flex;
+  gap: var(--gap);
+}
+
+main {
+  flex: 1;
+  padding: var(--gap);
+  max-width: var(--max-width);
+  margin-inline: auto;
+  width: 100%;
+}
+
+section {
+  margin-block: calc(var(--gap) * 2);
+}
+
+section h2 {
+  font-size: 1.25rem;
+  margin-bottom: var(--gap);
+}
+
+footer {
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  padding: var(--gap);
+  text-align: center;
+  color: var(--color-muted);
+  font-size: 0.875rem;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────── */
+@media (min-width: 640px) {
+  header h1 {
+    font-size: 1.5rem;
+  }
+
+  main {
+    padding: calc(var(--gap) * 1.5);
+  }
+}
