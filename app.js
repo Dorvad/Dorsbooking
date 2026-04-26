@@ -109,9 +109,9 @@ function animateOut(el, cb) {
 
 /* ── Booking flow ───────────────────────────────────────────────────── */
 const MEETING_TYPES = {
-  '15': { name: 'Quick Intro',     duration: 15 },
-  '30': { name: 'Discovery Call',  duration: 30 },
-  '60': { name: 'Deep Dive',       duration: 60 },
+  '15': { name: 'Quick Hello',  duration: 15 },
+  '30': { name: "Let's Talk",   duration: 30 },
+  '60': { name: 'Deep Dive',    duration: 60 },
 };
 
 function resetBookingFlow() {
@@ -407,7 +407,7 @@ function buildGCalUrl(booking) {
   const d     = booking.date.replace(/-/g, '');
   const start = booking.start.replace(':', '') + '00';
   const end   = booking.end.replace(':', '')   + '00';
-  const title = encodeURIComponent(`Meeting with Dors`);
+  const title = encodeURIComponent(`Meeting with Dor`);
   const desc  = encodeURIComponent(`${booking.typeName} — booked via Dorsbooking`);
   const tz    = encodeURIComponent(state.tz);
   return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${d}T${start}/${d}T${end}&details=${desc}&ctz=${tz}`;

@@ -3,29 +3,30 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Book a meeting with Dors — pick a time that works for you." />
-    <title>Book a meeting with Dors</title>
+    <meta name="description" content="Book a time with Dor — pick a slot that works for you." />
+    <title>Book a time with Dor</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
 
-    <!-- ── Identity header ──────────────────────────────────────────── -->
+    <!-- ── Hero header ──────────────────────────────────────────────── -->
     <header class="identity-bar" role="banner">
       <div class="identity-inner">
         <div class="avatar" aria-hidden="true">D</div>
-        <p class="identity-pre">Schedule a meeting with</p>
-        <h1 class="identity-name">Dors</h1>
+        <p class="identity-pre">Book a time with</p>
+        <h1 class="identity-name">Dor</h1>
+        <p class="identity-tagline">Glad you're here. Let's set something up.</p>
       </div>
     </header>
 
     <main id="main-content">
 
       <!-- ══════════════════════════════════════════════════════════════
-           BOOKING PANEL  — default view, always shown first
+           BOOKING PANEL
       ══════════════════════════════════════════════════════════════ -->
       <div id="panel-booking" class="panel panel-booking" aria-label="Book a meeting">
 
-        <!-- Step progress indicator -->
+        <!-- Step progress -->
         <div class="step-progress" aria-label="Booking progress" aria-live="polite">
           <div class="step-dot" data-step="1" aria-label="Step 1: Choose meeting type">1</div>
           <div class="step-line" data-step-line="1"></div>
@@ -36,8 +37,8 @@
 
         <!-- ── Step 1 · Meeting type ─────────────────────────────── -->
         <section id="meeting-type-picker" aria-labelledby="type-heading">
-          <h2 id="type-heading" class="step-heading">What kind of meeting?</h2>
-          <p class="step-sub">Pick a session type to see available times.</p>
+          <h2 id="type-heading" class="step-heading">What kind of chat?</h2>
+          <p class="step-sub">Pick the one that feels right and I'll show you my open times.</p>
 
           <ul class="type-list" role="list">
             <li>
@@ -49,8 +50,8 @@
               >
                 <span class="type-emoji" aria-hidden="true">⚡</span>
                 <span class="type-body">
-                  <strong class="type-name">Quick Intro</strong>
-                  <span class="type-desc">A brief intro or quick Q&amp;A</span>
+                  <strong class="type-name">Quick Hello</strong>
+                  <span class="type-desc">Just a casual intro</span>
                 </span>
                 <span class="type-pill">15 min</span>
               </button>
@@ -64,8 +65,8 @@
               >
                 <span class="type-emoji" aria-hidden="true">☕</span>
                 <span class="type-body">
-                  <strong class="type-name">Discovery Call</strong>
-                  <span class="type-desc">Explore how we can work together</span>
+                  <strong class="type-name">Let's Talk</strong>
+                  <span class="type-desc">Get to know each other</span>
                 </span>
                 <span class="type-pill">30 min</span>
               </button>
@@ -80,7 +81,7 @@
                 <span class="type-emoji" aria-hidden="true">🔬</span>
                 <span class="type-body">
                   <strong class="type-name">Deep Dive</strong>
-                  <span class="type-desc">A full working session or consultation</span>
+                  <span class="type-desc">A real working session</span>
                 </span>
                 <span class="type-pill">60 min</span>
               </button>
@@ -93,20 +94,16 @@
           <button type="button" class="back-btn" data-back-to-type aria-label="Go back to meeting type">
             ← Back
           </button>
-          <h2 id="slot-heading" class="step-heading">Pick a date &amp; time</h2>
+          <h2 id="slot-heading" class="step-heading">When works for you?</h2>
           <p class="tz-notice" aria-live="polite">
             Times in <span data-timezone-label>your local timezone</span>
             <span class="duration-badge" data-selected-duration></span>
           </p>
 
-          <!-- Horizontal date rail -->
           <div class="date-rail-wrapper" role="region" aria-label="Scroll through available dates">
-            <ol data-date-rail role="list" aria-label="Available dates" aria-live="polite">
-              <!-- Populated by app.js -->
-            </ol>
+            <ol data-date-rail role="list" aria-label="Available dates" aria-live="polite"></ol>
           </div>
 
-          <!-- Time slots -->
           <div class="slots-area">
             <p class="slots-date-label" data-slot-date-label hidden></p>
             <ol
@@ -115,11 +112,9 @@
               role="list"
               aria-label="Available time slots"
               aria-live="polite"
-            >
-              <!-- Populated by app.js -->
-            </ol>
-            <p data-slot-empty   class="empty-state" role="status" hidden>No slots on this day — try another date.</p>
-            <p data-slot-hint    class="empty-state hint-state" role="status">← Select a date to see times</p>
+            ></ol>
+            <p data-slot-empty   class="empty-state" role="status" hidden>Nothing left on this day — try another date.</p>
+            <p data-slot-hint    class="empty-state hint-state" role="status">← Tap a date to see open times</p>
           </div>
         </section>
 
@@ -128,21 +123,20 @@
           <button type="button" class="back-btn" data-back-to-slots aria-label="Go back to time selection">
             ← Change time
           </button>
-          <h2 id="confirm-heading" class="step-heading">Confirm your booking</h2>
+          <h2 id="confirm-heading" class="step-heading">Almost there!</h2>
+          <p class="step-sub">Just a couple of details and we're good to go.</p>
 
           <div
             data-booking-summary
             class="summary-card"
             aria-live="polite"
             aria-atomic="true"
-          >
-            <!-- Populated by app.js -->
-          </div>
+          ></div>
 
           <form data-booking-form class="booking-form" novalidate aria-label="Your details">
 
             <div class="field">
-              <label for="booking-name">Full name</label>
+              <label for="booking-name">Your name</label>
               <input
                 type="text"
                 id="booking-name"
@@ -169,19 +163,19 @@
 
             <div class="field">
               <label for="booking-notes">
-                Notes
+                Anything I should know?
                 <span class="field-opt">(optional)</span>
               </label>
               <textarea
                 id="booking-notes"
                 name="notes"
                 rows="3"
-                placeholder="Anything you'd like me to know in advance…"
+                placeholder="Topics, questions, context — whatever feels useful."
               ></textarea>
             </div>
 
             <button type="submit" class="btn-primary btn-block">
-              Confirm booking
+              Book it →
             </button>
           </form>
         </section>
@@ -195,7 +189,6 @@
           aria-live="assertive"
           hidden
         >
-          <!-- Animated SVG checkmark -->
           <div class="success-icon-wrap" aria-hidden="true">
             <svg class="checkmark-svg" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
               <circle class="checkmark-circle" cx="26" cy="26" r="23" stroke="currentColor" stroke-width="2.5"/>
@@ -203,12 +196,10 @@
             </svg>
           </div>
 
-          <h2 id="success-heading">You're booked!</h2>
-          <p class="success-sub">Confirmation details are below.</p>
+          <h2 id="success-heading">You're in!</h2>
+          <p class="success-sub">Looking forward to it. Here's your summary.</p>
 
-          <div data-success-summary class="success-summary-card">
-            <!-- Populated by app.js -->
-          </div>
+          <div data-success-summary class="success-summary-card"></div>
 
           <div class="success-actions">
             <a
@@ -223,10 +214,10 @@
                 <path d="M3 9h18" stroke="currentColor" stroke-width="1.8"/>
                 <path d="M8 2v4M16 2v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
               </svg>
-              Add to Google Calendar
+              Save to Google Calendar
             </a>
             <button type="button" class="btn-text" data-book-another>
-              Book another meeting
+              Book another time
             </button>
           </div>
         </section>
@@ -235,7 +226,7 @@
 
 
       <!-- ══════════════════════════════════════════════════════════════
-           MANAGER PANEL  — opened via footer, full-page replacement
+           MANAGER PANEL
       ══════════════════════════════════════════════════════════════ -->
       <div
         id="panel-manager"
@@ -244,12 +235,12 @@
         hidden
       >
 
-        <!-- Gate (not authed) ───────────────────────────────────── -->
+        <!-- Gate (not authed) -->
         <section id="manager-gate" data-manager-gate aria-labelledby="gate-heading">
           <button type="button" class="back-btn" data-manager-close>
-            ← Back to booking
+            ← Back
           </button>
-          <h2 id="gate-heading" class="step-heading">Manager sign-in</h2>
+          <h2 id="gate-heading" class="step-heading">Manager</h2>
           <p class="step-sub">Sign in to manage your availability and settings.</p>
 
           <form data-manager-login class="login-form" novalidate aria-label="Manager sign in">
@@ -262,7 +253,7 @@
                 autocomplete="email"
                 required
                 aria-required="true"
-                placeholder="manager@dorsbooking.com"
+                placeholder="manager@example.com"
               />
             </div>
             <div class="field">
@@ -280,10 +271,10 @@
           </form>
         </section>
 
-        <!-- Shell (authed) ─────────────────────────────────────── -->
+        <!-- Shell (authed) -->
         <div data-manager-shell hidden>
           <div class="manager-topbar">
-            <button type="button" class="back-btn" data-manager-close>← Back to booking</button>
+            <button type="button" class="back-btn" data-manager-close>← Back</button>
             <button type="button" class="btn-signout" data-manager-signout>Sign out</button>
           </div>
           <h2 class="manager-title">Settings</h2>
@@ -452,7 +443,7 @@
     <!-- ── Footer ───────────────────────────────────────────────────── -->
     <footer role="contentinfo">
       <p>
-        <span>&copy; 2026 Dorsbooking</span>
+        <span>&copy; 2026 Dor</span>
         <button type="button" class="footer-manage-btn" data-view-manager aria-label="Open manager settings">
           ⚙ Manage
         </button>
