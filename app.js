@@ -388,6 +388,26 @@ function validateBookingForm(form) {
   return true;
 }
 
+/* ── Google auth status ─────────────────────────────────────────────── */
+
+async function hydrateGoogleStatus() {
+  try {
+    const res = await fetch('/api/auth?action=status', { credentials: 'include' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    const statusEl   = $('[data-google-status]');
+    const connectBtn = $('[data-google-connect]');
+    if (statusEl)   statusEl.textContent = data.label ?? (data.connected ? 'Connected' : 'Not connected');
+    if (connectBtn) connectBtn.hidden    = data.connected === true;
+  } catch {
+    // Backend not available – leave the element at its default text.
+  }
+}
+
+function simulateGoogleConnect(source) {
+  window.location.href = `/api/auth?action=start&source=${encodeURIComponent(source)}`;
+}
+
 /* ── Manager panel init ─────────────────────────────────────────────── */
 
 function initManagerPanel() {
@@ -404,10 +424,7 @@ function initManagerPanel() {
 
   const googleBtn = $('[data-google-connect]');
   if (googleBtn) {
-    googleBtn.addEventListener('click', () => {
-      const statusEl = $('[data-google-status]');
-      if (statusEl) statusEl.textContent = 'Google Calendar integration is not configured in this demo.';
-    });
+    googleBtn.addEventListener('click', () => simulateGoogleConnect('manager'));
   }
 
   const availForm = $('#availability-form');
@@ -575,6 +592,9 @@ async function init() {
     console.warn('Could not load availability.json – falling back to defaults.', err);
     state.config = structuredClone(FALLBACK_CONFIG);
   }
+
+  // Fire-and-forget: reflects backend Google auth state when available.
+  hydrateGoogleStatus();
 
   initViewSwitching();
   initBookingPanel();
