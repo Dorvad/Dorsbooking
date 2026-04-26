@@ -265,9 +265,7 @@ app.delete('/api/book/:id', requireAuth, async (req, res) => {
 
 /* ── Google Calendar OAuth ───────────────────────────────────────────── */
 function getOAuthClient() {
-  const base = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : 'http://localhost:3000';
+  const base = process.env.APP_URL || 'http://localhost:3000';
   return new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
