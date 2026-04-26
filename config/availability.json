@@ -1,0 +1,14 @@
+{
+  "_comment": "Defines the manager's weekly availability. Each day lists time windows in 24-hour HH:MM format. An empty array means unavailable that day. This file is fetched by /api/availability and can be replaced by a database-backed source later.",
+  "timezone": "Europe/Amsterdam",
+  "slotDurationMinutes": 30,
+  "weeklySchedule": {
+    "monday":    [{ "start": "09:00", "end": "17:00" }],
+    "tuesday":   [{ "start": "09:00", "end": "17:00" }],
+    "wednesday": [{ "start": "09:00", "end": "12:00" }],
+    "thursday":  [{ "start": "09:00", "end": "17:00" }],
+    "friday":    [{ "start": "09:00", "end": "15:00" }],
+    "saturday":  [],
+    "sunday":    []
+  }
+}
