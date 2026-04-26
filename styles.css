@@ -690,6 +690,155 @@ legend {
   line-height: 1;
 }
 
+/* ── Animations ─────────────────────────────────────────────────────── */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(1.25rem); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-6px); }
+  40%      { transform: translateX(6px); }
+  60%      { transform: translateX(-4px); }
+  80%      { transform: translateX(4px); }
+}
+
+@keyframes successPop {
+  0%   { transform: scale(0.5); opacity: 0; }
+  70%  { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+@keyframes stepFadeIn {
+  from { opacity: 0; transform: translateY(0.5rem); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.anim-in.fade {
+  animation: fadeIn 0.25s ease both;
+}
+
+.anim-in.slide-up {
+  animation: slideUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.anim-out {
+  animation: fadeOut 0.2s ease both;
+  pointer-events: none;
+}
+
+.shake {
+  animation: shake 0.35s ease;
+}
+
+.step-enter {
+  animation: stepFadeIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.success-panel .success-icon {
+  animation: successPop 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Date rail stagger */
+.date-rail-wrapper [data-date-btn] {
+  animation: slideUp 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.date-rail-wrapper li:nth-child(1)  [data-date-btn] { animation-delay: 0.02s; }
+.date-rail-wrapper li:nth-child(2)  [data-date-btn] { animation-delay: 0.04s; }
+.date-rail-wrapper li:nth-child(3)  [data-date-btn] { animation-delay: 0.06s; }
+.date-rail-wrapper li:nth-child(4)  [data-date-btn] { animation-delay: 0.08s; }
+.date-rail-wrapper li:nth-child(5)  [data-date-btn] { animation-delay: 0.10s; }
+.date-rail-wrapper li:nth-child(6)  [data-date-btn] { animation-delay: 0.12s; }
+.date-rail-wrapper li:nth-child(7)  [data-date-btn] { animation-delay: 0.14s; }
+.date-rail-wrapper li:nth-child(8)  [data-date-btn] { animation-delay: 0.16s; }
+.date-rail-wrapper li:nth-child(9)  [data-date-btn] { animation-delay: 0.18s; }
+.date-rail-wrapper li:nth-child(10) [data-date-btn] { animation-delay: 0.20s; }
+
+/* Slot grid stagger */
+.slot-grid-wrapper [data-slot-btn] {
+  animation: slideUp 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.slot-grid-wrapper li:nth-child(1)  [data-slot-btn] { animation-delay: 0.03s; }
+.slot-grid-wrapper li:nth-child(2)  [data-slot-btn] { animation-delay: 0.06s; }
+.slot-grid-wrapper li:nth-child(3)  [data-slot-btn] { animation-delay: 0.09s; }
+.slot-grid-wrapper li:nth-child(4)  [data-slot-btn] { animation-delay: 0.12s; }
+.slot-grid-wrapper li:nth-child(5)  [data-slot-btn] { animation-delay: 0.15s; }
+.slot-grid-wrapper li:nth-child(6)  [data-slot-btn] { animation-delay: 0.18s; }
+.slot-grid-wrapper li:nth-child(7)  [data-slot-btn] { animation-delay: 0.21s; }
+.slot-grid-wrapper li:nth-child(8)  [data-slot-btn] { animation-delay: 0.24s; }
+
+/* Meeting type lift */
+.meeting-type-card {
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+.meeting-type-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-primary) 12%, transparent);
+}
+.meeting-type-card:active { transform: translateY(0); }
+
+/* Feature card hover */
+.feature-card {
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+.feature-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-primary) 10%, transparent);
+  transform: translateY(-1px);
+}
+
+/* Button press feedback */
+.btn-primary:active,
+.btn-ghost:active,
+.btn-secondary:active { transform: scale(0.97); }
+
+.date-rail-wrapper [data-date-btn]:active,
+.slot-grid-wrapper [data-slot-btn]:active { transform: scale(0.95); }
+
+.nav-tab:active { transform: scale(0.95); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Date rail typography ────────────────────────────────────────────── */
+.date-day {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+}
+.date-num {
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.date-mon {
+  font-size: 0.6875rem;
+  color: var(--color-muted);
+}
+.date-rail-wrapper [data-date-btn][aria-pressed="true"] .date-day,
+.date-rail-wrapper [data-date-btn][aria-pressed="true"] .date-mon {
+  color: var(--color-primary);
+  opacity: 0.8;
+}
+
 /* ── Responsive ──────────────────────────────────────────────────── */
 @media (min-width: 640px) {
   header h1 {
