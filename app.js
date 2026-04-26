@@ -310,7 +310,7 @@ function renderBookingSummary() {
 
   dom.bookingSummary.innerHTML = `
     <strong>${meetingType.name} · ${meetingType.duration} min</strong>
-    <div style="margin-top:0.3125rem;color:var(--c-primary);font-size:0.9rem">
+    <div style="margin-top:0.3125rem;color:rgba(255,255,255,0.65);font-size:0.9rem">
       ${dateStr}<br>
       ${formatTime(selectedSlot.start)} – ${formatTime(selectedSlot.end)}
     </div>
