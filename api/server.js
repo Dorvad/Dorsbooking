@@ -276,7 +276,7 @@ function getOAuthClient() {
 }
 
 // Manager clicks "Connect Google Calendar" — redirects to Google consent screen
-app.get('/api/auth/google', requireAuth, (req, res) => {
+app.get('/api/auth/google', (req, res) => {
   const url = getOAuthClient().generateAuthUrl({
     access_type: 'offline',
     prompt:      'consent',
@@ -286,7 +286,7 @@ app.get('/api/auth/google', requireAuth, (req, res) => {
 });
 
 // Google redirects back here after the manager approves
-app.get('/api/auth/google/callback', requireAuth, async (req, res) => {
+app.get('/api/auth/google/callback', async (req, res) => {
   try {
     const { tokens } = await getOAuthClient().getToken(req.query.code);
     await supabase.from('oauth_tokens').upsert({ provider: 'google', tokens });
