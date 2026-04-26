@@ -157,11 +157,6 @@ app.get('/api/settings', requireAuth, async (req, res) => {
   }
 });
 
-app.get('/api/debug-settings', async (req, res) => {
-  const { data, error } = await supabase.from('settings').select('key, value');
-  const url = process.env.SUPABASE_URL || '';
-  res.json({ data, error, supabaseUrl: url.slice(0, 40) });
-});
 
 app.put('/api/availability', requireAuth, async (req, res) => {
   try {
