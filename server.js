@@ -145,11 +145,12 @@ app.get('/api/availability', (req, res) => {
     return res.json({ date, duration: dur, slots });
   }
 
-  // No date → return available dates for next 30 days
+  // No date → return available dates for configured window
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+  const windowDays = config.bookingWindowDays || 30;
   const dates = [];
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < windowDays; i++) {
     const d      = new Date(today);
     d.setDate(today.getDate() + i);
     const dayKey = DAY_NAMES[d.getDay()];
@@ -160,10 +161,17 @@ app.get('/api/availability', (req, res) => {
   res.json({ dates });
 });
 
+app.get('/api/settings', requireAuth, (req, res) => {
+  res.json(readJSON(SCHEDULE_FILE, {}));
+});
+
 app.put('/api/availability', requireAuth, (req, res) => {
   const config = readJSON(SCHEDULE_FILE, {});
-  config.weeklySchedule = req.body.weeklySchedule || config.weeklySchedule;
-  if (req.body.slotDurationMinutes) config.slotDurationMinutes = req.body.slotDurationMinutes;
+  if (req.body.weeklySchedule)               config.weeklySchedule      = req.body.weeklySchedule;
+  if (req.body.slotDurationMinutes != null)  config.slotDurationMinutes = req.body.slotDurationMinutes;
+  if (req.body.bufferMinutes       != null)  config.bufferMinutes       = req.body.bufferMinutes;
+  if (req.body.minimumNoticeHours  != null)  config.minimumNoticeHours  = req.body.minimumNoticeHours;
+  if (req.body.bookingWindowDays   != null)  config.bookingWindowDays   = req.body.bookingWindowDays;
   writeJSON(SCHEDULE_FILE, config);
   res.json({ ok: true });
 });
