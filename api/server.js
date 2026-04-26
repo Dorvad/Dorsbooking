@@ -157,6 +157,11 @@ app.get('/api/settings', requireAuth, async (req, res) => {
   }
 });
 
+app.get('/api/debug-settings', async (req, res) => {
+  const { data, error } = await supabase.from('settings').select('key, value');
+  res.json({ data, error, supabaseUrl: process.env.SUPABASE_URL ? 'set' : 'MISSING' });
+});
+
 app.put('/api/availability', requireAuth, async (req, res) => {
   try {
     const fields = [
