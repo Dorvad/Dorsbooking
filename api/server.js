@@ -1,9 +1,10 @@
 'use strict';
 
-const express = require('express');
-const crypto  = require('crypto');
-const path    = require('path');
+const express        = require('express');
+const crypto         = require('crypto');
+const path           = require('path');
 const { createClient } = require('@supabase/supabase-js');
+const { google }     = require('googleapis');
 
 const app = express();
 
@@ -217,6 +218,11 @@ app.post('/api/book', async (req, res) => {
     const { error } = await supabase.from('bookings').insert([booking]);
     if (error) throw error;
 
+    // Fire and forget — don't make the visitor wait for Calendar API
+    addToGoogleCalendar(booking).catch(err =>
+      console.error('Google Calendar insert failed:', err.message)
+    );
+
     res.status(201).json({ ok: true, id: booking.id });
 
   } catch (err) {
@@ -256,6 +262,70 @@ app.delete('/api/book/:id', requireAuth, async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
+/* ── Google Calendar OAuth ───────────────────────────────────────────── */
+function getOAuthClient() {
+  const base = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : 'http://localhost:3000';
+  return new google.auth.OAuth2(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    `${base}/api/auth/google/callback`
+  );
+}
+
+// Manager clicks "Connect Google Calendar" — redirects to Google consent screen
+app.get('/api/auth/google', requireAuth, (req, res) => {
+  const url = getOAuthClient().generateAuthUrl({
+    access_type: 'offline',
+    prompt:      'consent',
+    scope:       ['https://www.googleapis.com/auth/calendar.events'],
+  });
+  res.redirect(url);
+});
+
+// Google redirects back here after the manager approves
+app.get('/api/auth/google/callback', requireAuth, async (req, res) => {
+  try {
+    const { tokens } = await getOAuthClient().getToken(req.query.code);
+    await supabase.from('oauth_tokens').upsert({ provider: 'google', tokens });
+    res.redirect('/?connected=1');
+  } catch (err) {
+    console.error('Google OAuth callback error:', err);
+    res.redirect('/?connected=error');
+  }
+});
+
+// Adds a Google Calendar event for a booking (called server-side after booking is saved)
+async function addToGoogleCalendar(booking) {
+  const { data } = await supabase
+    .from('oauth_tokens')
+    .select('tokens')
+    .eq('provider', 'google')
+    .single();
+  if (!data?.tokens) return;
+
+  const auth = getOAuthClient();
+  auth.setCredentials(data.tokens);
+
+  // Refresh and save updated tokens if they changed
+  auth.on('tokens', async updated => {
+    const merged = { ...data.tokens, ...updated };
+    await supabase.from('oauth_tokens').upsert({ provider: 'google', tokens: merged });
+  });
+
+  const cal = google.calendar({ version: 'v3', auth });
+  await cal.events.insert({
+    calendarId: 'primary',
+    requestBody: {
+      summary:     `${booking.name} — ${booking.duration} min`,
+      description: booking.notes || '',
+      start: { dateTime: `${booking.date}T${booking.start}:00`, timeZone: 'Europe/Amsterdam' },
+      end:   { dateTime: `${booking.date}T${booking.end}:00`,   timeZone: 'Europe/Amsterdam' },
+    },
+  });
+}
 
 /* ── Local dev entry point ───────────────────────────────────────────── */
 if (require.main === module) {

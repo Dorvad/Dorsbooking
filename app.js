@@ -644,10 +644,16 @@ function wireEvents() {
   const gcalBtn = $('[data-google-connect]');
   if (gcalBtn) {
     gcalBtn.addEventListener('click', () => {
-      if (dom.googleStatus) {
-        dom.googleStatus.textContent = 'Google Calendar OAuth is only available with a server-side implementation.';
-      }
+      window.location.href = '/api/auth/google';
     });
+  }
+
+  // Show a message if redirected back after connecting
+  if (new URLSearchParams(location.search).get('connected') === '1') {
+    if (dom.googleStatus) {
+      dom.googleStatus.textContent = 'Google Calendar connected! New bookings will appear in your calendar.';
+      dom.googleStatus.style.color = 'var(--c-primary, green)';
+    }
   }
 
   if (dom.availForm) {
