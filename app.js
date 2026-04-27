@@ -71,6 +71,9 @@ function initRefs() {
   dom.platformDetailInput  = $('[data-platform-detail-input]');
   dom.platformDetailLabel  = $('[data-platform-detail-label]');
   dom.platformMeetNote     = $('[data-platform-meet-note]');
+  dom.mapPreview           = $('[data-map-preview]');
+  dom.mapLoading           = $('[data-map-loading]');
+  dom.mapFrame             = $('[data-map-frame]');
 
   // Step progress
   dom.stepProgress    = $('.step-progress');
@@ -319,6 +322,33 @@ function handleSlotSelect(slot, btn) {
 }
 
 /* ── Platform picker ────────────────────────────────────────────────── */
+let _mapTimer = null;
+
+function updateMapPreview(address) {
+  if (!dom.mapPreview || !dom.mapFrame || !dom.mapLoading) return;
+  clearTimeout(_mapTimer);
+
+  if (!address.trim()) {
+    dom.mapPreview.hidden = true;
+    dom.mapFrame.hidden   = true;
+    dom.mapFrame.src      = '';
+    return;
+  }
+
+  dom.mapPreview.hidden  = false;
+  dom.mapFrame.hidden    = true;
+  dom.mapLoading.hidden  = false;
+
+  _mapTimer = setTimeout(() => {
+    const src = `https://maps.google.com/maps?q=${encodeURIComponent(address)}&output=embed&z=15`;
+    dom.mapFrame.onload = () => {
+      dom.mapLoading.hidden = true;
+      dom.mapFrame.hidden   = false;
+    };
+    dom.mapFrame.src = src;
+  }, 750);
+}
+
 function initPlatformPicker() {
   $$('[data-platform]').forEach(btn => {
     btn.addEventListener('click', () => handlePlatformSelect(btn.dataset.platform, btn));
@@ -326,6 +356,7 @@ function initPlatformPicker() {
   if (dom.platformDetailInput) {
     dom.platformDetailInput.addEventListener('input', () => {
       state.platformDetail = dom.platformDetailInput.value;
+      if (state.platform === 'in_person') updateMapPreview(state.platformDetail);
     });
   }
 }
@@ -334,6 +365,11 @@ function handlePlatformSelect(platform, btn) {
   state.platform = platform;
   state.platformDetail = '';
   if (dom.platformDetailInput) dom.platformDetailInput.value = '';
+
+  // Always reset map when switching platform
+  clearTimeout(_mapTimer);
+  if (dom.mapPreview) { dom.mapPreview.hidden = true; }
+  if (dom.mapFrame)   { dom.mapFrame.src = ''; dom.mapFrame.hidden = true; }
 
   $$('[data-platform]').forEach(b => b.setAttribute('aria-pressed', 'false'));
   btn.setAttribute('aria-pressed', 'true');

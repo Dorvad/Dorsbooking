@@ -671,6 +671,45 @@ main {
   animation: fadeSlideUp 0.25s var(--ease-spring) both;
 }
 
+/* ── Map preview ──────────────────────────────────────────────────────── */
+.map-preview {
+  margin-top: 0.75rem;
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 1.5px solid var(--c-border);
+  animation: fadeSlideUp 0.3s var(--ease-spring) both;
+}
+
+.map-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1rem;
+  font-size: 0.875rem;
+  color: var(--c-muted);
+}
+
+.map-loading-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c-muted);
+  animation: mapDotPulse 1s var(--ease-spring) infinite;
+  flex-shrink: 0;
+}
+
+@keyframes mapDotPulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50%       { opacity: 1;   transform: scale(1.2); }
+}
+
+.map-frame {
+  width: 100%;
+  height: 200px;
+  border: none;
+  display: block;
+}
+
 /* ── Booking form ────────────────────────────────────────────────────── */
 .booking-form {
   display: flex;

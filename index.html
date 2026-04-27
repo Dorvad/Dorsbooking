@@ -189,6 +189,21 @@
                 autocomplete="off"
               />
             </div>
+            <div class="map-preview" data-map-preview hidden>
+              <div class="map-loading" data-map-loading>
+                <span class="map-loading-dot"></span>
+                Finding location…
+              </div>
+              <iframe
+                data-map-frame
+                class="map-frame"
+                frameborder="0"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                title="Location map"
+                hidden
+              ></iframe>
+            </div>
           </div>
 
           <form data-booking-form class="booking-form" novalidate aria-label="Your details">
