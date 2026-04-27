@@ -126,19 +126,39 @@ a:hover { text-decoration: underline; }
 }
 
 .avatar {
-  width: 72px;
-  height: 72px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.1);
-  border: 2px solid rgba(255,255,255,0.2);
-  font-size: 1.75rem;
-  font-weight: 800;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  letter-spacing: -0.01em;
+  object-fit: cover;
+  object-position: center top;
+  border: 2.5px solid rgba(255,255,255,0.25);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.35);
   margin-bottom: 0.5rem;
+  cursor: pointer;
+  transform: rotate(-4deg);
+  transition: transform 0.4s var(--ease-spring), box-shadow 0.3s;
+  will-change: transform;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  display: block;
+}
+
+.avatar:hover {
+  transform: rotate(0deg) scale(1.1);
+  box-shadow: 0 0 0 4px rgba(255,255,255,0.3), 0 8px 28px rgba(0,0,0,0.4);
+}
+
+.avatar.is-popping {
+  animation: avatarWiggle 0.55s var(--ease-spring) both;
+}
+
+@keyframes avatarWiggle {
+  0%   { transform: rotate(0deg)  scale(1);    }
+  18%  { transform: rotate(-9deg) scale(1.18); }
+  36%  { transform: rotate(6deg)  scale(1.12); }
+  54%  { transform: rotate(-4deg) scale(1.07); }
+  72%  { transform: rotate(2deg)  scale(1.03); }
+  100% { transform: rotate(0deg)  scale(1);    }
 }
 
 .identity-pre {
@@ -1231,7 +1251,7 @@ section[hidden] { display: none; }
   }
 
   .identity-name { font-size: 2.75rem; }
-  .avatar { width: 80px; height: 80px; font-size: 2rem; }
+  .avatar { width: 88px; height: 88px; }
   .step-line { width: 64px; }
 
   .slot-grid {

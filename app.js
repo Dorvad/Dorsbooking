@@ -740,6 +740,17 @@ function wireEvents() {
     }
   }
 
+  // Avatar tap wiggle
+  const avatarEl = $('.avatar');
+  if (avatarEl) {
+    avatarEl.addEventListener('click', () => {
+      avatarEl.classList.remove('is-popping');
+      void avatarEl.offsetWidth; // force reflow to restart animation
+      avatarEl.classList.add('is-popping');
+      avatarEl.addEventListener('animationend', () => avatarEl.classList.remove('is-popping'), { once: true });
+    });
+  }
+
   if (dom.availForm) {
     dom.availForm.addEventListener('submit', handleAvailabilitySubmit);
 
