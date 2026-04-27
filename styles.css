@@ -488,6 +488,23 @@ main {
   color: rgba(255,255,255,0.85);
 }
 
+/* Today indicator */
+[data-date-btn].is-today {
+  border-color: var(--c-primary);
+}
+
+[data-date-btn].is-today .date-day {
+  color: var(--c-primary);
+}
+
+[data-date-btn][aria-pressed="true"].is-today {
+  border-color: #0d0d0d;
+}
+
+[data-date-btn][aria-pressed="true"].is-today .date-day {
+  color: rgba(255,255,255,0.65);
+}
+
 /* ── Slots area ──────────────────────────────────────────────────────── */
 .slots-area {
   min-height: 9rem;
@@ -572,6 +589,72 @@ main {
   color: #fff;
   font-size: 1rem;
   letter-spacing: -0.02em;
+}
+
+/* ── Platform picker ─────────────────────────────────────────────────── */
+.platform-section {
+  margin: 1.375rem 0 0.25rem;
+}
+
+.platform-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--c-text);
+  margin-bottom: 0.75rem;
+}
+
+.platform-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.625rem;
+}
+
+.platform-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.125rem;
+  background: var(--c-card-2);
+  border: 2px solid var(--c-border);
+  border-radius: var(--r-full);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--c-text);
+  transition: border-color 0.2s, background 0.2s, transform 0.2s var(--ease-spring), box-shadow 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  will-change: transform;
+}
+
+.platform-btn svg { flex-shrink: 0; }
+
+.platform-btn:hover {
+  border-color: #0d0d0d;
+  background: #f0f0f0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.platform-btn:active { transform: scale(0.95); box-shadow: none; }
+
+.platform-btn[aria-pressed="true"] {
+  background: #0d0d0d;
+  border-color: #0d0d0d;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.22);
+}
+
+.platform-meet-note {
+  font-size: 0.8125rem;
+  color: var(--c-muted);
+  margin-top: 0.625rem;
+}
+
+.platform-detail {
+  margin: 0.875rem 0 0;
+  animation: fadeSlideUp 0.25s var(--ease-spring) both;
 }
 
 /* ── Booking form ────────────────────────────────────────────────────── */
@@ -785,6 +868,14 @@ main {
   color: var(--c-hint);
   min-width: 4.5rem;
   flex-shrink: 0;
+}
+
+.summary-link {
+  color: var(--c-primary);
+  word-break: break-all;
+  font-size: 0.875rem;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 /* Success actions */

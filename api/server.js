@@ -185,7 +185,7 @@ app.put('/api/availability', requireAuth, async (req, res) => {
 /* ── Booking routes ──────────────────────────────────────────────────── */
 app.post('/api/book', async (req, res) => {
   try {
-    const { name, email, date, start, end, duration, notes } = req.body || {};
+    const { name, email, date, start, end, duration, notes, platform, meetingLink, location } = req.body || {};
     if (!name || !email || !date || !start || !end) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
@@ -204,26 +204,37 @@ app.post('/api/book', async (req, res) => {
     if (conflict) return res.status(409).json({ error: 'Slot no longer available' });
 
     const booking = {
-      id:       crypto.randomUUID(),
+      id:           crypto.randomUUID(),
       name,
       email,
-      notes:    notes || '',
+      notes:        notes || '',
       date,
       start,
       end,
-      duration: parseInt(duration, 10) || 30,
-      bookedAt: new Date().toISOString(),
+      duration:     parseInt(duration, 10) || 30,
+      bookedAt:     new Date().toISOString(),
+      platform:     platform || 'google_meet',
+      meeting_link: meetingLink || '',
+      location:     location || '',
     };
 
     const { error } = await supabase.from('bookings').insert([booking]);
     if (error) throw error;
 
-    // Fire and forget — don't make the visitor wait for Calendar API
-    addToGoogleCalendar(booking).catch(err =>
-      console.error('Google Calendar insert failed:', err.message)
-    );
+    // For Google Meet: await so we can return the Meet URL to the visitor
+    let meetUrl = '';
+    if (booking.platform === 'google_meet') {
+      meetUrl = await addToGoogleCalendar(booking).catch(err => {
+        console.error('Google Calendar insert failed:', err.message);
+        return '';
+      });
+    } else {
+      addToGoogleCalendar(booking).catch(err =>
+        console.error('Google Calendar insert failed:', err.message)
+      );
+    }
 
-    res.status(201).json({ ok: true, id: booking.id });
+    res.status(201).json({ ok: true, id: booking.id, meetUrl });
 
   } catch (err) {
     console.error('POST /api/book error:', err);
@@ -313,16 +324,32 @@ async function addToGoogleCalendar(booking) {
     await supabase.from('oauth_tokens').upsert({ provider: 'google', tokens: merged });
   });
 
-  const cal = google.calendar({ version: 'v3', auth });
-  await cal.events.insert({
-    calendarId: 'primary',
-    requestBody: {
-      summary:     `${booking.name} — ${booking.duration} min`,
-      description: booking.notes || '',
-      start: { dateTime: `${booking.date}T${booking.start}:00`, timeZone: 'Europe/Amsterdam' },
-      end:   { dateTime: `${booking.date}T${booking.end}:00`,   timeZone: 'Europe/Amsterdam' },
-    },
+  const cal        = google.calendar({ version: 'v3', auth });
+  const createMeet = booking.platform === 'google_meet';
+
+  const requestBody = {
+    summary:     `${booking.name} — ${booking.duration} min`,
+    description: booking.notes || '',
+    start: { dateTime: `${booking.date}T${booking.start}:00`, timeZone: 'Europe/Amsterdam' },
+    end:   { dateTime: `${booking.date}T${booking.end}:00`,   timeZone: 'Europe/Amsterdam' },
+  };
+
+  if (createMeet) {
+    requestBody.conferenceData = {
+      createRequest: {
+        requestId: booking.id,
+        conferenceSolutionKey: { type: 'hangoutsMeet' },
+      },
+    };
+  }
+
+  const { data: event } = await cal.events.insert({
+    calendarId:            'primary',
+    conferenceDataVersion: createMeet ? 1 : 0,
+    requestBody,
   });
+
+  return event.conferenceData?.entryPoints?.find(ep => ep.entryPointType === 'video')?.uri || '';
 }
 
 /* ── Local dev entry point ───────────────────────────────────────────── */

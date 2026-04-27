@@ -13,12 +13,14 @@ const DAY_NAMES = ['sunday','monday','tuesday','wednesday','thursday','friday','
 
 /* ── State ──────────────────────────────────────────────────────────── */
 const state = {
-  meetingType:   null,   // { duration: number, name: string }
-  selectedDate:  null,   // 'YYYY-MM-DD'
-  selectedSlot:  null,   // { start: 'HH:MM', end: 'HH:MM' }
-  mgrToken:      sessionStorage.getItem('mgr_token') || null,
-  authed:        !!sessionStorage.getItem('mgr_token'),
-  tz:            getUserTimezone(),
+  meetingType:    null,   // { duration: number, name: string }
+  selectedDate:   null,   // 'YYYY-MM-DD'
+  selectedSlot:   null,   // { start: 'HH:MM', end: 'HH:MM' }
+  platform:       null,   // 'google_meet' | 'zoom' | 'teams' | 'in_person'
+  platformDetail: '',     // meeting link or location
+  mgrToken:       sessionStorage.getItem('mgr_token') || null,
+  authed:         !!sessionStorage.getItem('mgr_token'),
+  tz:             getUserTimezone(),
 };
 
 /* ── API helper ─────────────────────────────────────────────────────── */
@@ -61,10 +63,14 @@ function initRefs() {
   dom.slotDateLabel   = $('[data-slot-date-label]');
   dom.tzLabel         = $('[data-timezone-label]');
   dom.selectedDur     = $('[data-selected-duration]');
-  dom.bookingSummary  = $('[data-booking-summary]');
-  dom.bookingForm     = $('[data-booking-form]');
-  dom.successSummary  = $('[data-success-summary]');
-  dom.gcalLink        = $('[data-gcal-link]');
+  dom.bookingSummary       = $('[data-booking-summary]');
+  dom.bookingForm          = $('[data-booking-form]');
+  dom.successSummary       = $('[data-success-summary]');
+  dom.gcalLink             = $('[data-gcal-link]');
+  dom.platformDetailField  = $('[data-platform-detail]');
+  dom.platformDetailInput  = $('[data-platform-detail-input]');
+  dom.platformDetailLabel  = $('[data-platform-detail-label]');
+  dom.platformMeetNote     = $('[data-platform-meet-note]');
 
   // Step progress
   dom.stepProgress    = $('.step-progress');
@@ -206,15 +212,21 @@ async function renderDateRail() {
       return;
     }
 
+    const todayIso = new Date().toISOString().slice(0, 10);
+
     dates.forEach(iso => {
-      const d   = new Date(iso + 'T00:00:00');
+      const d       = new Date(iso + 'T00:00:00');
+      const isToday = iso === todayIso;
+      const isPast  = iso < todayIso;
       const li  = document.createElement('li');
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.dataset.dateBtn = iso;
       btn.setAttribute('aria-pressed', 'false');
+      if (isToday) btn.classList.add('is-today');
+      if (isPast)  { btn.disabled = true; btn.setAttribute('aria-disabled', 'true'); }
       btn.innerHTML = `
-        <span class="date-day">${d.toLocaleDateString(undefined, { weekday: 'short' })}</span>
+        <span class="date-day">${isToday ? 'Today' : d.toLocaleDateString(undefined, { weekday: 'short' })}</span>
         <span class="date-num">${d.getDate()}</span>
         <span class="date-mon">${d.toLocaleDateString(undefined, { month: 'short' })}</span>
       `;
@@ -296,7 +308,53 @@ function handleSlotSelect(slot, btn) {
   btn.setAttribute('aria-pressed', 'true');
 
   renderBookingSummary();
+
+  // Default to Google Meet the first time we reach step 3
+  if (!state.platform) {
+    const gmBtn = $('[data-platform="google_meet"]');
+    if (gmBtn) handlePlatformSelect('google_meet', gmBtn);
+  }
+
   setTimeout(() => showStep('booking-details'), 180);
+}
+
+/* ── Platform picker ────────────────────────────────────────────────── */
+function initPlatformPicker() {
+  $$('[data-platform]').forEach(btn => {
+    btn.addEventListener('click', () => handlePlatformSelect(btn.dataset.platform, btn));
+  });
+  if (dom.platformDetailInput) {
+    dom.platformDetailInput.addEventListener('input', () => {
+      state.platformDetail = dom.platformDetailInput.value;
+    });
+  }
+}
+
+function handlePlatformSelect(platform, btn) {
+  state.platform = platform;
+  state.platformDetail = '';
+  if (dom.platformDetailInput) dom.platformDetailInput.value = '';
+
+  $$('[data-platform]').forEach(b => b.setAttribute('aria-pressed', 'false'));
+  btn.setAttribute('aria-pressed', 'true');
+
+  const needsDetail = platform === 'zoom' || platform === 'teams' || platform === 'in_person';
+  if (dom.platformDetailField) dom.platformDetailField.hidden = !needsDetail;
+  if (dom.platformMeetNote)    dom.platformMeetNote.hidden    = platform !== 'google_meet';
+
+  if (needsDetail && dom.platformDetailLabel && dom.platformDetailInput) {
+    if (platform === 'in_person') {
+      dom.platformDetailLabel.textContent = 'Where will you meet?';
+      dom.platformDetailInput.placeholder = 'e.g. Coffee on Main, 123 Main St';
+      dom.platformDetailInput.type = 'text';
+    } else {
+      dom.platformDetailLabel.textContent = 'Paste your meeting link';
+      dom.platformDetailInput.placeholder = platform === 'zoom'
+        ? 'https://zoom.us/j/...'
+        : 'https://teams.microsoft.com/...';
+      dom.platformDetailInput.type = 'url';
+    }
+  }
 }
 
 /* ── Step 3: booking form ───────────────────────────────────────────── */
@@ -340,31 +398,40 @@ async function handleBookingSubmit(e) {
   const prevErr = form.querySelector('.booking-error');
   if (prevErr) prevErr.remove();
 
+  const plat   = state.platform || 'google_meet';
+  const detail = state.platformDetail || '';
+
   try {
     const result = await api('/api/book', {
       method: 'POST',
       body: JSON.stringify({
-        name:     data.name.trim(),
-        email:    data.email.trim(),
-        notes:    data.notes?.trim() || '',
-        date:     state.selectedDate,
-        start:    state.selectedSlot.start,
-        end:      state.selectedSlot.end,
-        duration: state.meetingType.duration,
+        name:        data.name.trim(),
+        email:       data.email.trim(),
+        notes:       data.notes?.trim() || '',
+        date:        state.selectedDate,
+        start:       state.selectedSlot.start,
+        end:         state.selectedSlot.end,
+        duration:    state.meetingType.duration,
+        platform:    plat,
+        meetingLink: (plat === 'zoom' || plat === 'teams') ? detail : '',
+        location:    plat === 'in_person' ? detail : '',
       }),
     });
 
     const booking = {
-      id:       result.id,
-      name:     data.name.trim(),
-      email:    data.email.trim(),
-      notes:    data.notes?.trim() || '',
-      typeName: state.meetingType.name,
-      date:     state.selectedDate,
-      start:    state.selectedSlot.start,
-      end:      state.selectedSlot.end,
-      duration: state.meetingType.duration,
-      bookedAt: new Date().toISOString(),
+      id:             result.id,
+      name:           data.name.trim(),
+      email:          data.email.trim(),
+      notes:          data.notes?.trim() || '',
+      typeName:       state.meetingType.name,
+      date:           state.selectedDate,
+      start:          state.selectedSlot.start,
+      end:            state.selectedSlot.end,
+      duration:       state.meetingType.duration,
+      platform:       plat,
+      platformDetail: detail,
+      meetUrl:        result.meetUrl || '',
+      bookedAt:       new Date().toISOString(),
     };
 
     form.reset();
@@ -389,10 +456,25 @@ function showSuccessScreen(booking) {
   const dateStr = date.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
 
   if (dom.successSummary) {
+    const platformLabels = { google_meet: 'Google Meet', zoom: 'Zoom', teams: 'Teams', in_person: 'In Person' };
+    const platformName   = platformLabels[booking.platform] || '';
+    let platformRow = '';
+    if (platformName) {
+      platformRow += `<div class="summary-row"><span class="summary-label">Via</span><span>${platformName}</span></div>`;
+    }
+    if (booking.platform === 'google_meet' && booking.meetUrl) {
+      platformRow += `<div class="summary-row"><span class="summary-label">Link</span><a href="${booking.meetUrl}" target="_blank" rel="noopener noreferrer" class="summary-link">${booking.meetUrl}</a></div>`;
+    } else if ((booking.platform === 'zoom' || booking.platform === 'teams') && booking.platformDetail) {
+      platformRow += `<div class="summary-row"><span class="summary-label">Link</span><a href="${booking.platformDetail}" target="_blank" rel="noopener noreferrer" class="summary-link">${booking.platformDetail}</a></div>`;
+    } else if (booking.platform === 'in_person' && booking.platformDetail) {
+      platformRow += `<div class="summary-row"><span class="summary-label">Location</span><span>${booking.platformDetail}</span></div>`;
+    }
+
     dom.successSummary.innerHTML = `
       <div class="summary-row"><span class="summary-label">Meeting</span><span>${booking.typeName} · ${booking.duration} min</span></div>
       <div class="summary-row"><span class="summary-label">Date</span><span>${dateStr}</span></div>
       <div class="summary-row"><span class="summary-label">Time</span><span>${formatTime(booking.start)} – ${formatTime(booking.end)}</span></div>
+      ${platformRow}
     `;
   }
 
@@ -617,6 +699,8 @@ function wireEvents() {
   const backToSlots = $('[data-back-to-slots]');
   if (backToType)  backToType.addEventListener('click',  () => showStep('type-picker'));
   if (backToSlots) backToSlots.addEventListener('click', () => showStep('slot-picker'));
+
+  initPlatformPicker();
 
   if (dom.bookingForm) {
     dom.bookingForm.addEventListener('submit', handleBookingSubmit);
