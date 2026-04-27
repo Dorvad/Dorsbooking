@@ -65,6 +65,12 @@ app.use(express.static(path.join(__dirname, '..'), {
   extensions: ['html'],
 }));
 
+// Explicit route for the booking app so /book reliably serves book.html
+// (express.static extensions option is not always honoured in serverless envs)
+app.get('/book', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'book.html'));
+});
+
 /* ── Auth routes ──────────────────────────────────────────────────────── */
 app.post('/api/auth/login', (req, res) => {
   const { email, password } = req.body || {};

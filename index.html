@@ -167,10 +167,23 @@
       from { opacity: 0; transform: translateY(20px); }
       to   { opacity: 1; transform: translateY(0); }
     }
+
+    /* Transition overlay */
+    #overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 99;
+      background: #080808;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.42s ease;
+    }
+    #overlay.on { opacity: 1; }
   </style>
 </head>
 <body>
 
+  <div id="overlay"></div>
   <div id="stage"></div>
   <div id="vignette"></div>
 
@@ -281,11 +294,14 @@
       constraint: { stiffness: 0.18, angularStiffness: 0.12, render: { visible: false } },
     }));
 
-    /* ── CTA: scatter everything upward, then navigate ── */
+    /* ── CTA: scatter pills → fade to black → navigate ── */
     document.getElementById('cta').addEventListener('click', () => {
-      const rect = document.getElementById('cta').getBoundingClientRect();
+      const btn  = document.getElementById('cta');
+      const rect = btn.getBoundingClientRect();
       const cx   = rect.left + rect.width  / 2;
       const cy   = rect.top  + rect.height / 2;
+
+      // Scatter all pills outward and upward
       pills.forEach(({ body }) => {
         const dx  = body.position.x - cx;
         const dy  = body.position.y - cy;
@@ -297,7 +313,10 @@
         });
         Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.7);
       });
-      setTimeout(() => { window.location.href = '/book'; }, 520);
+
+      // Fade to black slightly after the scatter starts, then navigate
+      setTimeout(() => document.getElementById('overlay').classList.add('on'), 180);
+      setTimeout(() => { window.location.href = '/book'; }, 600);
     });
 
     Runner.run(Runner.create(), engine);
