@@ -343,10 +343,10 @@ app.get('/api/auth/google/callback', async (req, res) => {
   try {
     const { tokens } = await getOAuthClient().getToken(req.query.code);
     await supabase.from('oauth_tokens').upsert({ provider: 'google', tokens });
-    res.redirect('/?connected=1');
+    res.redirect('/book?connected=1');
   } catch (err) {
     console.error('Google OAuth callback error:', err);
-    res.redirect('/?connected=error');
+    res.redirect('/book?connected=error');
   }
 });
 

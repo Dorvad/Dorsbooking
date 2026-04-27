@@ -1,528 +1,308 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Book a time with Dor — pick a slot that works for you." />
-    <title>Book a time with Dor</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <meta name="description" content="Book a meeting with Dor Vadai — easy, no back-and-forth." />
+  <title>Book time with Dor</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    <!-- ── Hero header ──────────────────────────────────────────────── -->
-    <header class="identity-bar" role="banner">
-      <div class="identity-inner">
-        <img
-          class="avatar"
-          src="/dorsbooking_profile.png"
-          alt="Dor"
-          draggable="false"
-        />
-        <p class="identity-pre">Book a time with</p>
-        <h1 class="identity-name">Dor</h1>
-        <p class="identity-tagline">Glad you're here. Let's set something up.</p>
-      </div>
-    </header>
+    :root { --spring: cubic-bezier(0.22, 1, 0.36, 1); }
 
-    <main id="main-content">
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: #080808;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      color: #fff;
+      touch-action: none;
+    }
 
-      <!-- ══════════════════════════════════════════════════════════════
-           BOOKING PANEL
-      ══════════════════════════════════════════════════════════════ -->
-      <div id="panel-booking" class="panel panel-booking" aria-label="Book a meeting">
+    /* ── Physics stage ── */
+    #stage {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+    }
 
-        <!-- Step progress -->
-        <div class="step-progress" aria-label="Booking progress" aria-live="polite">
-          <div class="step-dot" data-step="1" aria-label="Step 1: Choose meeting type">1</div>
-          <div class="step-line" data-step-line="1"></div>
-          <div class="step-dot" data-step="2" aria-label="Step 2: Pick a date and time">2</div>
-          <div class="step-line" data-step-line="2"></div>
-          <div class="step-dot" data-step="3" aria-label="Step 3: Your details">3</div>
-        </div>
+    /* ── Pill DOM elements ── */
+    .pill {
+      position: absolute;
+      left: 0; top: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      border-radius: 9999px;
+      padding: 0 1.375rem;
+      cursor: grab;
+      user-select: none;
+      will-change: transform;
+      pointer-events: auto;
+      backface-visibility: hidden;
+    }
+    .pill:active { cursor: grabbing; }
 
-        <!-- ── Step 1 · Meeting type ─────────────────────────────── -->
-        <section id="meeting-type-picker" aria-labelledby="type-heading">
-          <h2 id="type-heading" class="step-heading">What kind of chat?</h2>
-          <p class="step-sub">Pick the one that feels right and I'll show you my open times.</p>
+    .pill-label {
+      font-weight: 700;
+      font-size: 0.875rem;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      white-space: nowrap;
+    }
 
-          <ul class="type-list" role="list">
-            <li>
-              <button
-                type="button"
-                class="type-card"
-                data-meeting-type="15"
-                aria-pressed="false"
-              >
-                <span class="type-emoji" aria-hidden="true">⚡</span>
-                <span class="type-body">
-                  <strong class="type-name">Quick Hello</strong>
-                  <span class="type-desc">Just a casual intro</span>
-                </span>
-                <span class="type-pill">15 min</span>
-              </button>
-            </li>
-            <li>
-              <button
-                type="button"
-                class="type-card"
-                data-meeting-type="30"
-                aria-pressed="false"
-              >
-                <span class="type-emoji" aria-hidden="true">☕</span>
-                <span class="type-body">
-                  <strong class="type-name">Let's Talk</strong>
-                  <span class="type-desc">Get to know each other</span>
-                </span>
-                <span class="type-pill">30 min</span>
-              </button>
-            </li>
-            <li>
-              <button
-                type="button"
-                class="type-card"
-                data-meeting-type="60"
-                aria-pressed="false"
-              >
-                <span class="type-emoji" aria-hidden="true">🔬</span>
-                <span class="type-body">
-                  <strong class="type-name">Deep Dive</strong>
-                  <span class="type-desc">A real working session</span>
-                </span>
-                <span class="type-pill">60 min</span>
-              </button>
-            </li>
-          </ul>
-        </section>
+    .pill-sub {
+      font-size: 0.625rem;
+      font-weight: 600;
+      opacity: 0.7;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
 
-        <!-- ── Step 2 · Date + time ──────────────────────────────── -->
-        <section id="slot-picker" aria-labelledby="slot-heading" hidden>
-          <button type="button" class="back-btn" data-back-to-type aria-label="Go back to meeting type">
-            ← Back
-          </button>
-          <h2 id="slot-heading" class="step-heading">When works for you?</h2>
-          <p class="tz-notice" aria-live="polite">
-            Times in <span data-timezone-label>your local timezone</span>
-            <span class="duration-badge" data-selected-duration></span>
-          </p>
+    /* ── Centre vignette keeps hero text legible ── */
+    #vignette {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 60% 55% at 50% 42%,
+          rgba(8,8,8,0.82) 0%,
+          rgba(8,8,8,0.35) 55%,
+          transparent 100%);
+    }
 
-          <div class="date-rail-wrapper" role="region" aria-label="Scroll through available dates">
-            <ol data-date-rail role="list" aria-label="Available dates" aria-live="polite"></ol>
-          </div>
+    /* ── Hero ── */
+    .hero {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: clamp(8vh, 12vh, 14vh);
+      pointer-events: none;
+    }
 
-          <div class="slots-area">
-            <p class="slots-date-label" data-slot-date-label hidden></p>
-            <ol
-              data-slot-grid
-              class="slot-grid"
-              role="list"
-              aria-label="Available time slots"
-              aria-live="polite"
-            ></ol>
-            <p data-slot-empty   class="empty-state" role="status" hidden>Nothing left on this day — try another date.</p>
-            <p data-slot-hint    class="empty-state hint-state" role="status">← Tap a date to see open times</p>
-          </div>
-        </section>
+    .hero-avatar {
+      width: clamp(80px, 14vw, 108px);
+      height: auto;
+      display: block;
+      margin-bottom: 1.25rem;
+      animation: fadeUp 1s var(--spring) 0.05s both;
+    }
 
-        <!-- ── Step 3 · Confirm ──────────────────────────────────── -->
-        <section id="booking-details" aria-labelledby="confirm-heading" hidden>
-          <button type="button" class="back-btn" data-back-to-slots aria-label="Go back to time selection">
-            ← Change time
-          </button>
-          <h2 id="confirm-heading" class="step-heading">Almost there!</h2>
-          <p class="step-sub">Just a couple of details and we're good to go.</p>
+    .hero-eyebrow {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 0.875rem;
+      animation: fadeUp 0.8s var(--spring) 0.18s both;
+    }
 
-          <div
-            data-booking-summary
-            class="summary-card"
-            aria-live="polite"
-            aria-atomic="true"
-          ></div>
+    h1 {
+      font-size: clamp(3.25rem, 10vw, 6.75rem);
+      font-weight: 900;
+      letter-spacing: -0.045em;
+      line-height: 0.92;
+      text-align: center;
+      margin-bottom: 1.125rem;
+      animation: fadeUp 0.75s var(--spring) 0.26s both;
+    }
 
-          <!-- ── Platform picker ────────────────────────────────── -->
-          <div class="platform-section" data-platform-picker>
-            <p class="platform-label">How should we meet?</p>
-            <div class="platform-grid">
-              <button type="button" class="platform-btn" data-platform="google_meet" aria-pressed="false">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <rect x="2" y="6" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/>
-                  <path d="M14 9l6-3v12l-6-3V9z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-                </svg>
-                Google Meet
-              </button>
-              <button type="button" class="platform-btn" data-platform="zoom" aria-pressed="false">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <rect x="2" y="7" width="12" height="10" rx="2" stroke="currentColor" stroke-width="1.8"/>
-                  <path d="M14 10.5l6-3.5v10l-6-3.5v-3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-                </svg>
-                Zoom
-              </button>
-              <button type="button" class="platform-btn" data-platform="teams" aria-pressed="false">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <circle cx="9" cy="7" r="3" stroke="currentColor" stroke-width="1.8"/>
-                  <circle cx="17" cy="8" r="2.2" stroke="currentColor" stroke-width="1.6"/>
-                  <path d="M2 19c0-3.314 3.134-6 7-6s7 2.686 7 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                  <path d="M17 14c2.209 0 4 1.567 4 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-                </svg>
-                Teams
-              </button>
-              <button type="button" class="platform-btn" data-platform="in_person" aria-pressed="false">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M12 2C8.686 2 6 4.686 6 8c0 5.25 6 13 6 13s6-7.75 6-13c0-3.314-2.686-6-6-6z" stroke="currentColor" stroke-width="1.8"/>
-                  <circle cx="12" cy="8" r="2" stroke="currentColor" stroke-width="1.6"/>
-                </svg>
-                In Person
-              </button>
-            </div>
-            <p class="platform-meet-note" data-platform-meet-note hidden>
-              A Google Meet link will be created automatically.
-            </p>
-          </div>
+    .hero-sub {
+      font-size: clamp(0.9375rem, 2vw, 1.0625rem);
+      color: rgba(255,255,255,0.36);
+      line-height: 1.55;
+      text-align: center;
+      max-width: 21rem;
+      margin-bottom: 2.375rem;
+      animation: fadeUp 0.75s var(--spring) 0.36s both;
+    }
 
-          <!-- Conditional link / location field -->
-          <div class="platform-detail" data-platform-detail hidden>
-            <div class="field">
-              <label for="platform-detail-input" data-platform-detail-label>Meeting link</label>
-              <input
-                type="text"
-                id="platform-detail-input"
-                data-platform-detail-input
-                autocomplete="off"
-              />
-            </div>
-            <div class="map-preview" data-map-preview hidden>
-              <div class="map-loading" data-map-loading>
-                <span class="map-loading-dot"></span>
-                Finding location…
-              </div>
-              <iframe
-                data-map-frame
-                class="map-frame"
-                frameborder="0"
-                loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade"
-                title="Location map"
-                hidden
-              ></iframe>
-            </div>
-          </div>
+    #cta {
+      pointer-events: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5625rem;
+      padding: 0.9375rem 1.9375rem;
+      background: #fff;
+      color: #080808;
+      font-size: 0.9375rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      font-family: inherit;
+      border: none;
+      border-radius: 9999px;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 4px 28px rgba(0,0,0,0.55);
+      transition: transform 0.35s var(--spring), box-shadow 0.25s;
+      animation: fadeUp 0.75s var(--spring) 0.48s both;
+    }
 
-          <form data-booking-form class="booking-form" novalidate aria-label="Your details">
+    #cta:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 14px 44px rgba(0,0,0,0.6);
+    }
 
-            <div class="field">
-              <label for="booking-name">Your name</label>
-              <input
-                type="text"
-                id="booking-name"
-                name="name"
-                autocomplete="name"
-                required
-                aria-required="true"
-                placeholder="Jane Smith"
-              />
-            </div>
+    #cta:active {
+      transform: scale(0.97);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.35);
+      transition-duration: 0.08s;
+    }
 
-            <div class="field">
-              <label for="booking-email">Email address</label>
-              <input
-                type="email"
-                id="booking-email"
-                name="email"
-                autocomplete="email"
-                required
-                aria-required="true"
-                placeholder="jane@example.com"
-              />
-            </div>
+    .arrow {
+      display: inline-block;
+      transition: transform 0.3s var(--spring);
+    }
+    #cta:hover .arrow { transform: translateX(5px); }
 
-            <div class="field">
-              <label for="booking-notes">
-                Anything I should know?
-                <span class="field-opt">(optional)</span>
-              </label>
-              <textarea
-                id="booking-notes"
-                name="notes"
-                rows="3"
-                placeholder="Topics, questions, context — whatever feels useful."
-              ></textarea>
-            </div>
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
 
-            <button type="submit" class="btn-primary btn-block">
-              Book it →
-            </button>
-          </form>
-        </section>
+  <div id="stage"></div>
+  <div id="vignette"></div>
 
-        <!-- ── Step 4 · Success ──────────────────────────────────── -->
-        <section
-          id="booking-success"
-          data-booking-success
-          class="success-section"
-          aria-labelledby="success-heading"
-          aria-live="assertive"
-          hidden
-        >
-          <div class="success-icon-wrap" aria-hidden="true">
-            <svg class="checkmark-svg" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle class="checkmark-circle" cx="26" cy="26" r="23" stroke="currentColor" stroke-width="2.5"/>
-              <path  class="checkmark-path"   d="M14.5 26.5l7.5 8 16-18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
+  <div class="hero">
+    <img class="hero-avatar" src="/dorsbooking_profile.png" alt="Dor Vadai" draggable="false" />
+    <p class="hero-eyebrow">Schedule a meeting</p>
+    <h1>Let's find<br>a time.</h1>
+    <p class="hero-sub">No back-and-forth. Just pick a slot<br>that works and you're done.</p>
+    <button id="cta" type="button">
+      See open slots <span class="arrow">→</span>
+    </button>
+  </div>
 
-          <h2 id="success-heading">You're in!</h2>
-          <p class="success-sub">Looking forward to it. Here's your summary.</p>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+  <script>
+  (function () {
+    const { Engine, Runner, Bodies, Body, World, Events, Mouse, MouseConstraint } = Matter;
 
-          <div data-success-summary class="success-summary-card"></div>
+    const W = window.innerWidth;
+    const H = window.innerHeight;
+    const SCALE = Math.min(1, W / 420);   // shrink on narrow screens
 
-          <div class="success-actions">
-            <a
-              data-gcal-link
-              href="#"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn-gcal"
-            >
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <rect x="3" y="4" width="18" height="17" rx="2" stroke="currentColor" stroke-width="1.8"/>
-                <path d="M3 9h18" stroke="currentColor" stroke-width="1.8"/>
-                <path d="M8 2v4M16 2v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-              </svg>
-              Save to Google Calendar
-            </a>
-            <button type="button" class="btn-text" data-book-another>
-              Book another time
-            </button>
-          </div>
-        </section>
+    const engine = Engine.create({ gravity: { x: 0, y: 1.4 } });
+    const { world } = engine;
 
-      </div><!-- /panel-booking -->
+    /* ── Static boundaries ── */
+    const T = 100;
+    World.add(world, [
+      Bodies.rectangle(W / 2, H + T / 2, W * 4, T, { isStatic: true, restitution: 0.2, friction: 0.8 }),   // floor
+      Bodies.rectangle(-T / 2, H / 2,    T, H * 4, { isStatic: true, restitution: 0.35, friction: 0.5 }),  // left
+      Bodies.rectangle(W + T / 2, H / 2, T, H * 4, { isStatic: true, restitution: 0.35, friction: 0.5 }),  // right
+    ]);
 
+    /* ── Pill data ── */
+    const raw = [
+      { label: 'Quick Hello',    sub: '15 min', bg: '#FF5757', color: '#fff',           w: 162, h: 52 },
+      { label: "Let's Talk",     sub: '30 min', bg: '#FFAA00', color: '#1a1001',        w: 152, h: 52 },
+      { label: 'Deep Dive',      sub: '60 min', bg: '#00C4B4', color: '#fff',           w: 150, h: 52 },
+      { label: 'No prep needed', bg: 'rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.48)', border: 'rgba(255,255,255,0.11)', w: 184, h: 48 },
+      { label: 'This week',      bg: 'rgba(0,196,180,0.11)',  color: 'rgba(0,196,180,0.7)',    border: 'rgba(0,196,180,0.22)',   w: 132, h: 48 },
+      { label: 'Quick call',     bg: 'rgba(255,87,87,0.11)',  color: 'rgba(255,87,87,0.7)',    border: 'rgba(255,87,87,0.22)',   w: 130, h: 48 },
+      { label: 'Available',      bg: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.38)', border: 'rgba(255,255,255,0.09)', w: 120, h: 46 },
+      { label: "Let's meet",     bg: 'rgba(255,170,0,0.11)',  color: 'rgba(255,170,0,0.7)',    border: 'rgba(255,170,0,0.22)',   w: 136, h: 48 },
+      { label: '30 min',         bg: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.3)',  border: 'rgba(255,255,255,0.08)', w: 98,  h: 44 },
+      { label: 'Mon',            bg: 'rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.26)', border: 'rgba(255,255,255,0.07)', w: 76,  h: 44 },
+      { label: 'Wed',            bg: 'rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.26)', border: 'rgba(255,255,255,0.07)', w: 76,  h: 44 },
+      { label: 'Fri',            bg: 'rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.26)', border: 'rgba(255,255,255,0.07)', w: 70,  h: 44 },
+    ];
 
-      <!-- ══════════════════════════════════════════════════════════════
-           MANAGER PANEL
-      ══════════════════════════════════════════════════════════════ -->
-      <div
-        id="panel-manager"
-        class="panel panel-manager"
-        aria-label="Manager Settings"
-        hidden
-      >
+    /* Scale dimensions for small screens */
+    const DEFS = raw.map(d => ({
+      ...d,
+      w: Math.round(d.w * SCALE),
+      h: Math.round(d.h * SCALE),
+    }));
 
-        <!-- Gate (not authed) -->
-        <section id="manager-gate" data-manager-gate aria-labelledby="gate-heading">
-          <button type="button" class="back-btn" data-manager-close>
-            ← Back
-          </button>
-          <h2 id="gate-heading" class="step-heading">Manager</h2>
-          <p class="step-sub">Sign in to manage your availability and settings.</p>
+    const pills  = [];
+    const stage  = document.getElementById('stage');
 
-          <form data-manager-login class="login-form" novalidate aria-label="Manager sign in">
-            <div class="field">
-              <label for="manager-email">Email</label>
-              <input
-                type="email"
-                id="manager-email"
-                name="email"
-                autocomplete="email"
-                required
-                aria-required="true"
-                placeholder="manager@example.com"
-              />
-            </div>
-            <div class="field">
-              <label for="manager-password">Password</label>
-              <input
-                type="password"
-                id="manager-password"
-                name="password"
-                autocomplete="current-password"
-                required
-                aria-required="true"
-              />
-            </div>
-            <button type="submit" class="btn-primary btn-block">Sign in</button>
-          </form>
-        </section>
+    function spawnPill(i) {
+      const d = DEFS[i % DEFS.length];
+      const x = d.w / 2 + 16 + Math.random() * (W - d.w - 32);
 
-        <!-- Shell (authed) -->
-        <div data-manager-shell hidden>
-          <div class="manager-topbar">
-            <button type="button" class="back-btn" data-manager-close>← Back</button>
-            <button type="button" class="btn-signout" data-manager-signout>Sign out</button>
-          </div>
-          <h2 class="manager-title">Settings</h2>
+      /* DOM element */
+      const el = document.createElement('div');
+      el.className = 'pill';
+      el.style.cssText = `
+        width:${d.w}px; height:${d.h}px;
+        background:${d.bg}; color:${d.color};
+        ${d.border ? `border:1.5px solid ${d.border};` : ''}
+        font-size:${Math.round(14 * SCALE)}px;
+      `;
+      el.innerHTML = d.sub
+        ? `<span class="pill-label">${d.label}</span><span class="pill-sub">${d.sub}</span>`
+        : `<span class="pill-label">${d.label}</span>`;
+      stage.appendChild(el);
 
-          <!-- Google Calendar -->
-          <section class="settings-section" aria-labelledby="gcal-heading">
-            <h3 id="gcal-heading" class="settings-section-title">Google Calendar</h3>
-            <p data-google-status class="status-line" aria-live="polite">Not connected</p>
-            <button type="button" class="btn-secondary" data-google-connect>
-              Connect Google Calendar
-            </button>
-          </section>
+      /* Physics body — chamfered rectangle ≈ pill shape */
+      const body = Bodies.rectangle(x, -d.h, d.w, d.h, {
+        restitution: 0.28,
+        friction: 0.72,
+        frictionAir: 0.012,
+        density: 0.002,
+        chamfer: { radius: d.h * 0.44, quality: 4 },
+      });
+      Body.setVelocity(body, { x: (Math.random() - 0.5) * 1.5, y: 0.5 });
+      Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.05);
+      Body.setAngle(body, (Math.random() - 0.5) * 0.25);
+      World.add(world, body);
+      pills.push({ el, body, w: d.w, h: d.h });
+    }
 
-          <!-- Availability editor -->
-          <section class="settings-section" aria-labelledby="avail-heading">
-            <h3 id="avail-heading" class="settings-section-title">Availability</h3>
+    /* Stagger spawns so they fall like a cascade */
+    DEFS.forEach((_, i) => setTimeout(() => spawnPill(i), 150 + i * 320 + Math.random() * 180));
 
-            <form id="availability-form" novalidate>
+    /* ── Sync DOM positions ── */
+    Events.on(engine, 'afterUpdate', () => {
+      pills.forEach(({ el, body, w, h }) => {
+        el.style.transform =
+          `translate(${body.position.x - w / 2}px,${body.position.y - h / 2}px) rotate(${body.angle}rad)`;
+      });
+    });
 
-              <fieldset class="avail-fieldset">
-                <legend>Default working hours</legend>
-                <div class="field-row">
-                  <div class="field">
-                    <label for="availability-start">Start</label>
-                    <input type="time" id="availability-start" name="availabilityStart" value="09:00" />
-                  </div>
-                  <div class="field">
-                    <label for="availability-end">End</label>
-                    <input type="time" id="availability-end" name="availabilityEnd" value="17:00" />
-                  </div>
-                </div>
-              </fieldset>
+    /* ── Mouse / touch drag ── */
+    const mouse = Mouse.create(stage);
+    World.add(world, MouseConstraint.create(engine, {
+      mouse,
+      constraint: { stiffness: 0.18, angularStiffness: 0.12, render: { visible: false } },
+    }));
 
-              <fieldset class="avail-fieldset">
-                <legend>Weekly schedule</legend>
-                <ul class="weekday-list" role="list">
+    /* ── CTA: scatter everything upward, then navigate ── */
+    document.getElementById('cta').addEventListener('click', () => {
+      const rect = document.getElementById('cta').getBoundingClientRect();
+      const cx   = rect.left + rect.width  / 2;
+      const cy   = rect.top  + rect.height / 2;
+      pills.forEach(({ body }) => {
+        const dx  = body.position.x - cx;
+        const dy  = body.position.y - cy;
+        const len = Math.sqrt(dx * dx + dy * dy) || 1;
+        const spd = 16 + Math.random() * 16;
+        Body.setVelocity(body, {
+          x:  (dx / len) * spd + (Math.random() - 0.5) * 5,
+          y: -(Math.abs(dy / len) * spd + 10 + Math.random() * 10),
+        });
+        Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.7);
+      });
+      setTimeout(() => { window.location.href = '/book'; }, 520);
+    });
 
-                  <li class="weekday-row" data-weekday="monday">
-                    <label class="weekday-toggle">
-                      <input type="checkbox" name="day-monday" value="monday" checked />
-                      <span class="weekday-name">Mon</span>
-                    </label>
-                    <div class="weekday-hours">
-                      <input type="time" name="monday-start" aria-label="Monday start" value="09:00" />
-                      <span aria-hidden="true">–</span>
-                      <input type="time" name="monday-end" aria-label="Monday end" value="17:00" />
-                    </div>
-                  </li>
+    Runner.run(Runner.create(), engine);
+  })();
+  </script>
 
-                  <li class="weekday-row" data-weekday="tuesday">
-                    <label class="weekday-toggle">
-                      <input type="checkbox" name="day-tuesday" value="tuesday" checked />
-                      <span class="weekday-name">Tue</span>
-                    </label>
-                    <div class="weekday-hours">
-                      <input type="time" name="tuesday-start" aria-label="Tuesday start" value="09:00" />
-                      <span aria-hidden="true">–</span>
-                      <input type="time" name="tuesday-end" aria-label="Tuesday end" value="17:00" />
-                    </div>
-                  </li>
-
-                  <li class="weekday-row" data-weekday="wednesday">
-                    <label class="weekday-toggle">
-                      <input type="checkbox" name="day-wednesday" value="wednesday" checked />
-                      <span class="weekday-name">Wed</span>
-                    </label>
-                    <div class="weekday-hours">
-                      <input type="time" name="wednesday-start" aria-label="Wednesday start" value="09:00" />
-                      <span aria-hidden="true">–</span>
-                      <input type="time" name="wednesday-end" aria-label="Wednesday end" value="12:00" />
-                    </div>
-                  </li>
-
-                  <li class="weekday-row" data-weekday="thursday">
-                    <label class="weekday-toggle">
-                      <input type="checkbox" name="day-thursday" value="thursday" checked />
-                      <span class="weekday-name">Thu</span>
-                    </label>
-                    <div class="weekday-hours">
-                      <input type="time" name="thursday-start" aria-label="Thursday start" value="09:00" />
-                      <span aria-hidden="true">–</span>
-                      <input type="time" name="thursday-end" aria-label="Thursday end" value="17:00" />
-                    </div>
-                  </li>
-
-                  <li class="weekday-row" data-weekday="friday">
-                    <label class="weekday-toggle">
-                      <input type="checkbox" name="day-friday" value="friday" checked />
-                      <span class="weekday-name">Fri</span>
-                    </label>
-                    <div class="weekday-hours">
-                      <input type="time" name="friday-start" aria-label="Friday start" value="09:00" />
-                      <span aria-hidden="true">–</span>
-                      <input type="time" name="friday-end" aria-label="Friday end" value="15:00" />
-                    </div>
-                  </li>
-
-                  <li class="weekday-row" data-weekday="saturday">
-                    <label class="weekday-toggle">
-                      <input type="checkbox" name="day-saturday" value="saturday" />
-                      <span class="weekday-name">Sat</span>
-                    </label>
-                    <div class="weekday-hours">
-                      <input type="time" name="saturday-start" aria-label="Saturday start" value="09:00" />
-                      <span aria-hidden="true">–</span>
-                      <input type="time" name="saturday-end" aria-label="Saturday end" value="17:00" />
-                    </div>
-                  </li>
-
-                  <li class="weekday-row" data-weekday="sunday">
-                    <label class="weekday-toggle">
-                      <input type="checkbox" name="day-sunday" value="sunday" />
-                      <span class="weekday-name">Sun</span>
-                    </label>
-                    <div class="weekday-hours">
-                      <input type="time" name="sunday-start" aria-label="Sunday start" value="09:00" />
-                      <span aria-hidden="true">–</span>
-                      <input type="time" name="sunday-end" aria-label="Sunday end" value="17:00" />
-                    </div>
-                  </li>
-
-                </ul>
-              </fieldset>
-
-              <fieldset class="avail-fieldset">
-                <legend>Booking rules</legend>
-
-                <div class="field">
-                  <label for="slot-duration">Slot duration (minutes)</label>
-                  <select id="slot-duration" name="slotDuration">
-                    <option value="15">15 min</option>
-                    <option value="30" selected>30 min</option>
-                    <option value="60">60 min</option>
-                  </select>
-                </div>
-
-                <div class="field">
-                  <label for="buffer-minutes">Buffer between meetings (minutes)</label>
-                  <input type="number" id="buffer-minutes" name="bufferMinutes" min="0" max="60" step="5" value="0" />
-                </div>
-
-                <div class="field">
-                  <label for="minimum-notice-hours">Minimum notice (hours)</label>
-                  <input type="number" id="minimum-notice-hours" name="minimumNoticeHours" min="0" max="168" value="24" />
-                </div>
-
-                <div class="field">
-                  <label for="booking-window-days">Booking window (days ahead)</label>
-                  <input type="number" id="booking-window-days" name="bookingWindowDays" min="1" max="365" value="30" />
-                </div>
-              </fieldset>
-
-              <button type="submit" class="btn-primary btn-block" data-save-availability>
-                Save changes
-              </button>
-
-            </form>
-          </section>
-
-        </div><!-- /data-manager-shell -->
-
-      </div><!-- /panel-manager -->
-
-    </main>
-
-    <!-- ── Footer ───────────────────────────────────────────────────── -->
-    <footer role="contentinfo">
-      <p>
-        <span>&copy; 2026 Dor</span>
-        <button type="button" class="footer-manage-btn" data-view-manager aria-label="Open manager settings">
-          ⚙ Manage
-        </button>
-      </p>
-    </footer>
-
-    <script src="app.js"></script>
-  </body>
+</body>
 </html>
