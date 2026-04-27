@@ -5,6 +5,9 @@ const crypto         = require('crypto');
 const path           = require('path');
 const { createClient } = require('@supabase/supabase-js');
 const { google }     = require('googleapis');
+const { Resend }     = require('resend');
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const app = express();
 
@@ -234,6 +237,11 @@ app.post('/api/book', async (req, res) => {
       );
     }
 
+    // Fire-and-forget email notification to the manager
+    sendBookingNotification(booking, meetUrl).catch(err =>
+      console.error('Email notification failed:', err.message)
+    );
+
     res.status(201).json({ ok: true, id: booking.id, meetUrl });
 
   } catch (err) {
@@ -273,6 +281,42 @@ app.delete('/api/book/:id', requireAuth, async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
+/* ── Email notifications ─────────────────────────────────────────────── */
+async function sendBookingNotification(booking, meetUrl = '') {
+  const to = process.env.RESEND_EMAIL_TO;
+  if (!to || !process.env.RESEND_API_KEY) return;
+
+  const platformLabels = { google_meet: 'Google Meet', zoom: 'Zoom', teams: 'Teams', in_person: 'In Person' };
+  const platformName   = platformLabels[booking.platform] || booking.platform || '';
+
+  const date = new Date(`${booking.date}T00:00:00`);
+  const dateStr = date.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+  let detailLine = '';
+  if (meetUrl)                                              detailLine = `<b>Meet link:</b> <a href="${meetUrl}">${meetUrl}</a>`;
+  else if (booking.meeting_link)                            detailLine = `<b>Meeting link:</b> <a href="${booking.meeting_link}">${booking.meeting_link}</a>`;
+  else if (booking.location)                                detailLine = `<b>Location:</b> ${booking.location}`;
+
+  await resend.emails.send({
+    from:    'Dorsbooking <onboarding@resend.dev>',
+    to,
+    subject: `New booking — ${booking.name} on ${dateStr}`,
+    html: `
+      <p>Hey Dor, you have a new booking!</p>
+      <table style="border-collapse:collapse;font-family:sans-serif;font-size:15px">
+        <tr><td style="padding:4px 16px 4px 0;color:#888">Name</td>   <td><b>${booking.name}</b></td></tr>
+        <tr><td style="padding:4px 16px 4px 0;color:#888">Email</td>  <td><a href="mailto:${booking.email}">${booking.email}</a></td></tr>
+        <tr><td style="padding:4px 16px 4px 0;color:#888">Date</td>   <td>${dateStr}</td></tr>
+        <tr><td style="padding:4px 16px 4px 0;color:#888">Time</td>   <td>${booking.start} – ${booking.end}</td></tr>
+        <tr><td style="padding:4px 16px 4px 0;color:#888">Type</td>   <td>${booking.duration} min</td></tr>
+        <tr><td style="padding:4px 16px 4px 0;color:#888">Via</td>    <td>${platformName}</td></tr>
+        ${detailLine ? `<tr><td style="padding:4px 16px 4px 0;color:#888">Detail</td><td>${detailLine}</td></tr>` : ''}
+        ${booking.notes ? `<tr><td style="padding:4px 16px 4px 0;color:#888">Notes</td><td>${booking.notes}</td></tr>` : ''}
+      </table>
+    `,
+  });
+}
 
 /* ── Google Calendar OAuth ───────────────────────────────────────────── */
 function getOAuthClient() {
