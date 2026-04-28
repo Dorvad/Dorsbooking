@@ -245,7 +245,7 @@ app.post('/api/book', async (req, res) => {
 
     // Fire-and-forget email notification to the manager
     sendBookingNotification(booking, meetUrl).catch(err =>
-      console.error('Email notification failed:', err.message)
+      console.error('Email notification failed:', err?.message, err?.statusCode, JSON.stringify(err?.response?.data ?? err))
     );
 
     res.status(201).json({ ok: true, id: booking.id, meetUrl });
@@ -290,8 +290,12 @@ app.delete('/api/book/:id', requireAuth, async (req, res) => {
 
 /* ── Email notifications ─────────────────────────────────────────────── */
 async function sendBookingNotification(booking, meetUrl = '') {
-  const to = process.env.RESEND_EMAIL_TO;
-  if (!to || !process.env.RESEND_API_KEY) return;
+  const to  = process.env.RESEND_EMAIL_TO;
+  const key = process.env.RESEND_API_KEY;
+  if (!to || !key) {
+    console.warn('Email skipped: RESEND_EMAIL_TO or RESEND_API_KEY not set');
+    return;
+  }
 
   const platformLabels = { google_meet: 'Google Meet', zoom: 'Zoom', teams: 'Teams', in_person: 'In Person' };
   const platformName   = platformLabels[booking.platform] || booking.platform || '';
